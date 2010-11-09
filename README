@@ -1,0 +1,172 @@
+Redux has a simple goal:
+To reduce the amount of code you need to write when using Appcelerator Titanium.
+
+To use its features, include the redux.js or redux.min.js file at the top of your app.js:
+	Ti.include('redux.js');
+
+-----------------------------------------------------------------------------------------
+- FEATURES
+-----------------------------------------------------------------------------------------
+
+----------------------------------------------
+- SHORTHAND FOR COMMON FUNCTIONS
+----------------------------------------------
+
+Some functions you use all the time. Redux makes them shorter, and easier to type.
+
+_Normal Code					_Redux Code
+Titanium.API.info('hi');		info('hi');
+Titanium.API.error('hi');		error('hi');
+Titanium.API.warn('hi');		warn('hi');
+Titanium.API.log('hi');			log('hi');
+Titanium.include('foo.js');		include('foo.js');
+
+
+----------------------------------------------
+- UI CONSTRUCTION
+----------------------------------------------
+
+Create new UI elements using the new Whatever() syntax you're used to in JavaScript.
+Note that by making your UI elements this way, you also get to take advantage of other
+Redux features like JSS, default properties, and more.
+
+_Normal Code
+var label = Titanium.UI.createLabel({});
+
+_Redux Code
+var label = new Label({});
+
+
+----------------------------------------------
+- UI PROPERTY DEFAULTS BY ELEMENT TYPE
+----------------------------------------------
+
+You can specify default properties for your UI elements. This lets you specify properties
+in one place, and for multiple elements. This is especially useful for application wide
+settings, like fonts and colors, but also useful to help you keep your design logic out of
+your business logic. Note that property defaults by element type are considered less
+important than property defaults by ID or properties passed in to the constructor, and can be
+overridden by either of these.
+
+_Normal Code
+Not Supported
+
+_Redux Code
+Label.setDefault({ font: {fontWeight: 'bold' } });
+var label = new Label();
+alert(label.font.fontWeight == 'bold');
+
+
+----------------------------------------------
+- UI PROPERTY DEFAULTS BY ID
+----------------------------------------------
+
+Using a similar method to setting UI Property Defaults by Element Type, you can set them
+for your UI elements by their IDs. Note that property defaults by ID are considered more
+important than default properties by element type, and will override them.
+
+_Normal Code
+Not Supported
+
+_Redux Code
+$.setDefault('helloWorld', { text: 'Hello, World!', color: 'red' });
+var label = new Label({ id: 'helloWorld', color: 'blue' });
+alert(label.text == 'Hello, World!');
+alert(label.color == 'blue');
+
+
+----------------------------------------------
+- EVENT BINDING
+----------------------------------------------
+
+Bind events in a more natural way. Note the wrapping $().
+
+_Normal Code
+var button = Titanium.UI.createButton({ title: 'Click Me!' });
+button.addEventListener('click', function() { alert('clicked!'); });
+button.fireEvent('click');
+button.fireEvent('click', {src: 'me'});
+
+_Redux Code
+var button = new Button({ title: 'Click Me!' });
+$(button).click(function() { alert('clicked!'); });
+$(button).click();
+$(button).click({src: 'me'});
+
+
+You can add support for custom events.
+_Normal Code
+button.addEventListener('myCustomEvent', function() { });
+
+_Redux Code
+$.addEvent('myCustomEvent');
+$(button).myCustomEvent(function() { });
+
+
+----------------------------------------------
+- JSS
+----------------------------------------------
+
+JSS, or JavaScript Style Sheets, let you create CSS-like rules to style your UI elements.
+Note that JSS can only style elements you create using Redux's method of creating elements,
+and that this isn't actual CSS.
+
+_Normal Code
+Not Supported until Version 1.5 (even then, some features here won't be supported)
+
+_Redux Code for Including JSS from your app.js (or any .js file)
+includeJSS('common.jss');
+
+_Redux Code for Styling Elements from common.jss (or any .jss file)
+Window { // all "Window" type elements
+	backgroundColor: '#fff'
+}
+Label { // all "Label" type elements
+	backgroundColor: '#faa',
+	color: '#333'
+}
+Label[Platform.osname="android"] { // only applied on Android! could also be "ipad" or "iphone"
+	backgroundColor: '#aaf',
+	color: '#666'
+}
+#HelloWorld { // whoever has the id:"HelloWorld" property when they are created
+	left: 15,
+	right: 15,
+	height: 70,
+	top: 50
+}
+#HelloWorld[Platform.locale="en"] { // only applied if the locale is "en"
+    text: 'Hello, World!'
+}
+#HelloWorld[Platform.locale="es"] { // only applied if the locale is "es"
+    text: '¡Bienvenido, Mundo!'
+}
+
+
+Here are some key features to note--you'll want to use them:
+	1) Include as many .jss files as you need to keep yourself organized.
+	2) Have as many rules as you need.
+	3) Have multiple rules for a single element.
+	4) Attributes can use anything in the Ti namespace. I happened to use Platform.locale.
+	5) Attributes can work negatively too -- [Platform.locale!="en"]
+	6) White space doesn't matter; put it where you want it.
+	7) You can localize your app using the [Platform.locale="whatever"] attribute.
+	8) The includeJSS function can take in multiple files or just one; it's up to you.
+	9) #HelloWorld has higher precedence than the Label rule.
+
+Here are some things you CANNOT do yet, but that will be supported soon:
+	1) Chaining selectors (ie Window, Label { backgroundColor: '#fff' }).
+	2) Chaining attributes (ie Window[Platform.osname="iphone"][Platform.osname="ipad"]).
+	3) Comments via /*a comment*/ and //another comment.
+
+
+-----------------------------------------------------------------------------------------
+- CONTACT INFORMATION
+-----------------------------------------------------------------------------------------
+
+Redux was made by Dawson Toth from TothSolutions, LLC. (www.tothsolutions.com).
+TothSolutions, LLC. uses Appcelerator every day to create mobile applications for
+its clients, and created Redux to ease that process and give back to the community
+that created Appcelerator.
+
+We can be contacted through our website -- www.tothsolutions.com/Contact

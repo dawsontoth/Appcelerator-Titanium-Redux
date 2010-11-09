@@ -1,0 +1,14 @@
+v2	11/09/2010
+	JSS support! -- include easy localization
+	Added a wrapper context $ function so we can support prototyping
+	Event binding like "$(new Label()).click(function() { });"
+	Added support for setting defaults by the ID of the element
+	Removed enhanced include function; Appcelerator's already supported multiple files at once
+	Added redux.min.js
+	Updated the README with all the new goodies and the old ones
+
+v1	11/08/2010
+	Added shorthand to commonly used functions like "info('Hello, World!');"
+	Easy UI constructors like "new Label()"
+	Default values for UI elements made through Redux like "Label.setDefault({text:'Awesome'});"
+	Enhanced include function supporting multiple files
