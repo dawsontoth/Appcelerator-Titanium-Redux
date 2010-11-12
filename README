@@ -14,28 +14,53 @@ To use its features, include the redux.js or redux.min.js file at the top of you
 
 Some functions you use all the time. Redux makes them shorter, and easier to type.
 
-_Normal Code					_Redux Code
-Titanium.API.info('hi');		info('hi');
-Titanium.API.error('hi');		error('hi');
-Titanium.API.warn('hi');		warn('hi');
-Titanium.API.log('hi');			log('hi');
-Titanium.include('foo.js');		include('foo.js');
+_Normal Code					
+Titanium.API.info('hi');		
+Titanium.API.error('hi');		
+Titanium.API.warn('hi');		
+Titanium.API.log('hi');			
+Titanium.include('foo.js');		
 
-
+_Redux Code		
+info('hi');		
+error('hi');		
+warn('hi');		
+log('hi');		
+include('foo.js');	
+	
 ----------------------------------------------
 - UI CONSTRUCTION
 ----------------------------------------------
 
-Create new UI elements using the new Whatever() syntax you're used to in JavaScript.
-Note that by making your UI elements this way, you also get to take advantage of other
-Redux features like JSS, default properties, and more.
+Create new Ti elements using the new Constructor() syntax you're used to in JavaScript.
+Note that by making your elements this way, you also get to take advantage of other
+Redux features like JSS, default properties, and more. You can use this syntax for any
+element normally created using the syntax Ti.*.create*. For example, Ti.Network.createHTTPClient()
+and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respectively.
 
-_Normal Code
-var label = Titanium.UI.createLabel({});
+_Normal Code		
+var label = Titanium.UI.createLabel();
 
-_Redux Code
-var label = new Label({});
+_Redux Code		
+var label = new Label();
 
+
+----------------------------------------------
+- SELECTING ELEMENTS
+----------------------------------------------
+
+When you create elements using redux, you can select them out later much like you can in
+the popular JavaScript library jQuery.
+
+_Normal Code		
+Not Supported		
+
+_Redux Code		
+var label = new Label({ className: 'labelClass', id: 'labelWithID' });	
+var allMyLabels = $('Label');	
+var labelsWithClass = $('.labelClass');	
+var labelByID = $('#labelWithID');	
+alert(labelByID[0] = label);	
 
 ----------------------------------------------
 - UI PROPERTY DEFAULTS BY ELEMENT TYPE
@@ -48,31 +73,33 @@ your business logic. Note that property defaults by element type are considered 
 important than property defaults by ID or properties passed in to the constructor, and can be
 overridden by either of these.
 
-_Normal Code
-Not Supported
+_Normal Code		
+Not Supported		
 
-_Redux Code
-Label.setDefault({ font: {fontWeight: 'bold' } });
-var label = new Label();
-alert(label.font.fontWeight == 'bold');
+_Redux Code		
+Label.setDefault({ font: {fontWeight: 'bold' } });		
+var label = new Label();		
+alert(label.font.fontWeight == 'bold');		
 
 
 ----------------------------------------------
-- UI PROPERTY DEFAULTS BY ID
+- UI PROPERTY DEFAULTS BY ID AND CLASS NAME
 ----------------------------------------------
 
 Using a similar method to setting UI Property Defaults by Element Type, you can set them
-for your UI elements by their IDs. Note that property defaults by ID are considered more
-important than default properties by element type, and will override them.
+for your UI elements by their IDs or class names. Note that property defaults by ID are considered more
+important than default properties by element type and class names, and will override them.
 
-_Normal Code
-Not Supported
+_Normal Code	
+Not Supported	
 
-_Redux Code
-$.setDefault('helloWorld', { text: 'Hello, World!', color: 'red' });
-var label = new Label({ id: 'helloWorld', color: 'blue' });
-alert(label.text == 'Hello, World!');
+_Redux Code		
+$.setDefaultByID('myID', { text: 'Hello, World!', color: 'red' });	
+$.setDefaultByClassName('myClass', { font: { fontSize: 12 }, color: 'green' });
+var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
+alert(label.text == 'Hello, World!');	
 alert(label.color == 'blue');
+alert(label.font.fontSize == 12);
 
 
 ----------------------------------------------
@@ -81,26 +108,26 @@ alert(label.color == 'blue');
 
 Bind events in a more natural way. Note the wrapping $().
 
-_Normal Code
-var button = Titanium.UI.createButton({ title: 'Click Me!' });
-button.addEventListener('click', function() { alert('clicked!'); });
-button.fireEvent('click');
-button.fireEvent('click', {src: 'me'});
+_Normal Code	
+var button = Titanium.UI.createButton({ title: 'Click Me!' });	
+button.addEventListener('click', function() { alert('clicked!'); });	
+button.fireEvent('click');	
+button.fireEvent('click', {src: 'me'});	
 
-_Redux Code
-var button = new Button({ title: 'Click Me!' });
-$(button).click(function() { alert('clicked!'); });
-$(button).click();
-$(button).click({src: 'me'});
+_Redux Code	
+var button = new Button({ title: 'Click Me!' });	
+$(button).click(function() { alert('clicked!'); });	
+         .click();	
+         .click({src: 'me'});	
 
 
-You can add support for custom events.
-_Normal Code
-button.addEventListener('myCustomEvent', function() { });
+You can add support for custom events.	
+_Normal Code	
+button.addEventListener('myCustomEvent', function() { });	
 
-_Redux Code
-$.addEvent('myCustomEvent');
-$(button).myCustomEvent(function() { });
+_Redux Code	
+$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
+$(button).myCustomEvent(function() { });	
 
 
 ----------------------------------------------
@@ -118,28 +145,34 @@ _Redux Code for Including JSS from your app.js (or any .js file)
 includeJSS('common.jss');
 
 _Redux Code for Styling Elements from common.jss (or any .jss file)
-Window { // all "Window" type elements
+Window {
 	backgroundColor: '#fff'
 }
-Label { // all "Label" type elements
+Label {
 	backgroundColor: '#faa',
 	color: '#333'
 }
-Label[Platform.osname="android"] { // only applied on Android! could also be "ipad" or "iphone"
+/* add an attribute that will act as a filter */
+Label[Platform.osname="android"] {
 	backgroundColor: '#aaf',
 	color: '#666'
 }
-#HelloWorld { // whoever has the id:"HelloWorld" property when they are created
+/* select by id */
+#HelloWorld {
 	left: 15,
 	right: 15,
 	height: 70,
 	top: 50
 }
-#HelloWorld[Platform.locale="en"] { // only applied if the locale is "en"
+#HelloWorld[Platform.locale="en"] {
     text: 'Hello, World!'
 }
-#HelloWorld[Platform.locale="es"] { // only applied if the locale is "es"
+#HelloWorld[Platform.locale="es"] {
     text: '¡Bienvenido, Mundo!'
+}
+/* select by className */
+.myClass {
+	text: 'Set by class'
 }
 
 
@@ -157,7 +190,6 @@ Here are some key features to note--you'll want to use them:
 Here are some things you CANNOT do yet, but that will be supported soon:
 	1) Chaining selectors (ie Window, Label { backgroundColor: '#fff' }).
 	2) Chaining attributes (ie Window[Platform.osname="iphone"][Platform.osname="ipad"]).
-	3) Comments via /*a comment*/ and //another comment.
 
 
 -----------------------------------------------------------------------------------------

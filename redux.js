@@ -1,191 +1,19 @@
 /*!
-* Appcelerator Redux v2 by Dawson Toth
+* Appcelerator Redux v3 by Dawson Toth
 * http://tothsolutions.com/
 */
 
 /**
 * Create shorthand for commonly used functions.
 */
-var info = Titanium.API.info;
-var error = Titanium.API.error;
-var warn = Titanium.API.warn;
-var log = Titanium.API.log;
-var include = Titanium.include;
+var info = Titanium.API.info,
+	error = Titanium.API.error,
+	warn = Titanium.API.warn,
+	log = Titanium.API.log,
+	include = Titanium.include;
 
 /**
-* Provide a wrapper context around Titanium's UI elements, like jQuery does for HTML elements.
-*/
-function $(element) {
-    if (!(this instanceof arguments.callee)) {
-        return new $(element);
-    }
-    this.element = element;
-}
-
-/** 
-* Enhance Ti.UI events -- shorthand and adding custom shorthand.
-*/
-var events = [
-    'beforeload', 'blur', 'change', 'click', 'close', 'dblclick', 'delete', 'doubletap',
-    'focus', 'load', 'move', 'open', 'return', 'scroll', 'scrollEnd', 'selected', 'singletap',
-    'swipe', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'twofingertap'];
-function addEventBinder(event) {
-    $.prototype[event] = function () {
-        if (arguments.length == 0) {
-            this.element.fireEvent(event, arguments[0]);
-        }
-        else if (arguments[0] instanceof Function) {
-            this.element.addEventListener(event, arguments[0]);
-        }
-        else {
-            this.element.fireEvent(event, arguments[0]);
-        }
-        return this;
-    };
-}
-/** 
-* Add shorthand events.
-*
-* Example:
-* var textField = new TextField();
-* // listen for the 'change' event
-* $(textField).change(function() { info('changed!'); });
-* // fire the 'change' event without arguments
-* $(textField).change();
-* // fire the 'change' event with arguments
-* $(textField).change({ source: 'Your Mom' });
-*/
-for (var i = 0; i < events.length; i++) {
-    addEventBinder(events[i]);
-}
-/**
-* Adding custom shorthand.
-*
-* Example:
-* $.addEvent('myEvent');
-* var textField = new TextField();
-* $(textField).myEvent();
-*/
-$.addEvent = function (event) {
-    addEventBinder(event);
-};
-
-/** 
-* Enhance Ti.UI objects -- easy constructors and default values.
-*/
-var elements = [
-    '2DMatrix', '3DMatrix', 'ActivityIndicator', 'AlertDialog', 'Animation', 'Button',
-    'ButtonBar', 'CoverFlowView', 'DashboardItem', 'DashboardView', 'EmailDialog',
-    'ImageView', 'Label', 'OptionDialog', 'Picker', 'PickerColumn', 'PickerRow',
-    'ProgressBar', 'ScrollView', 'ScrollableView', 'SearchBar', 'Slider', 'Switch',
-    'Tab', 'TabGroup', 'TabbedBar', 'TableView', 'TableViewRow', 'TableViewSection',
-    'TextArea', 'TextField', 'Toolbar', 'View', 'WebView', 'Window'];
-function mergeObjects(original, overrider) {
-    if (original == null)
-        original = {};
-    if (overrider == null)
-        return original;
-    for (var index in overrider) {
-        if (!overrider.hasOwnProperty(index))
-            continue;
-        if (typeof original[index] == 'undefined')
-            original[index] = overrider[index];
-        else if (typeof overrider[index] == 'object') {
-            original[index] = mergeObjects(original[index], overrider[index]);
-        }
-    }
-    return original;
-}
-for (var i in elements) {
-    if (!elements.hasOwnProperty(i)) {
-        continue;
-    }
-    (function (element) {
-        var defaults = {};
-        /**
-        * Add easy constructors.
-        *
-        * Example:
-        * var label = new Label(optional args);
-        * Instead of:
-        * var label = Ti.UI.createLabel(optional args);
-        */
-        this[element] = function cstor(args) {
-            if (!(this instanceof arguments.callee)) {
-                return new cstor(args);
-            }
-
-            // merge in the defaults particular to this element's ID
-            if (args && args.id && $.defaultForIDStore[args.id]) {
-                args = mergeObjects(args, $.defaultForIDStore[args.id]);
-            }
-            // merge in the defaults particular to this type of element
-            args = mergeObjects(args, defaults);
-
-            return Titanium.UI['create' + element](args);
-        };
-        /**
-        * Default properties for this UI element; only applies to instances you create after calling setDefault.
-        *
-        * Example:
-        * Label.setDefault({ left: 1, right: 2 });
-        * var label = new Label({ left: 3 });
-        * alert(label.left == 3 && label.right == 2);
-        */
-        this[element].setDefault = function (args) {
-            defaults = args;
-        };
-        this[element].getDefault = function () {
-            return defaults;
-        };
-    })(elements[i]);
-}
-/**
-* Default properties for an element with a particular ID.
-*/
-$.defaultForIDStore = {};
-$.setDefault = function (id, defaults) {
-    this.defaultForIDStore[id] = defaults;
-};
-
-/**
-* JSS -- separate and simplify all the design related properties you use in your UI elements.
-*
-* With this particular version of JavaScript Style Sheets, you can leverage several CSS like
-* selectors to define the default properties for your UI elements created through Redux.
-* 1) By element type (like Label, or Window)
-* 2) By ID (as defined when you make the object, new Button({ id: 'helloWorld' }))
-* 3) By Titanium variable attribute comparison ([Platform.osname="android"] will only match on Android devices)
-*
-* Example:
-// in your .js file
-includeJSS('common.jss');
-var label = new Label({ id: 'HelloWorld' });
-
-// in your common.jss file
-Window {
-	backgroundColor: '#fff'
-}
-Label {
-	backgroundColor: '#faa',
-	color: '#333'
-}
-Label[Platform.osname="android"] {
-	backgroundColor: '#aaf',
-	color: '#666'
-}
-#HelloWorld {
-	left: 15,
-	right: 15,
-	height: 70,
-	top: 50
-}
-#HelloWorld[Platform.locale="en"] {
-    text: 'Hello, World!'
-}
-#HelloWorld[Platform.locale="es"] {
-    text: '¡Bienvenido, Mundo!'
-}
+* JSS -- separate and simplify all the repeated properties you use in your code.
 */
 function includeJSS() {
     for (var i = 0; i < arguments.length; i++) {
@@ -196,7 +24,7 @@ function includeJSS() {
 }
 /**
 * Turns a string of JSS into a string that can be safely evaluated.
-
+* 
 * Inspired by, but not derived from, John Resig's Micro-Templating
 * http://ejohn.org/blog/javascript-micro-templating/
 */
@@ -204,10 +32,268 @@ function parseJSS(contents) {
     return (';' + contents) // prefix ; to eliminate fringe case
         .split('}').join('});') // close off everywhere we find a curly brace (yes, even nested braces)
         .replace(/}\);\s*}\);/igm, '}}\);') // fix any nested braces that we over closed
+        .replace(/\/\*.*?\*\//igm, '') // remove any comments
+        .replace(/}\);,/igm, '},') // fix any other nested braces that we over closed
         .split('=').join('==') // replace the equal signs in attributes with the proper comparison operator
         .split('!==').join('!=') // fix extra equal sign we added to inequality operator
-        .split('[').join('[Ti.') // add the Ti namespace to all attributes
+        .split('[').join('[Ti.') // add the Ti. namespace to all attributes
         .replace(/;(\s*.+?)\[(.+?)\]\s*{/igm, ';if($2)$1{') // finish replacing attributes with an if statement
-        .replace(/\#([a-z0-9_-]+)\s*{/igm, '$.setDefault("$1",{') // replace all #ids with a call to $.setDefault
-        .replace(/(\s*[a-z0-9_-]+)\s*{/igm, '$1.setDefault({'); // replace the other selects with a call their.setDefault
+        .replace(/\.([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByClassName("$1",{') // replace all .classNames with a call to redux.setDefaultByClassName
+        .replace(/\#([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByID("$1",{') // replace all #ids with a call to redux.fn.setDefaultByID
+        .replace(/\s*([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByType("$1",{'); // replace the other selects with a call to redux.fn.setDefaultByType
 }
+
+/**
+* Provide a central context for dealing with elements and configuring redux.
+*/
+var redux = function(selector) {
+	return new redux.fn.init(selector);
+};
+redux.data = {
+	events: [
+		'beforeload', 'blur', 'change', 'click', 'close', 'dblclick', 'delete', 'doubletap',
+	    'error', 'focus', 'load', 'move', 'open', 'return', 'scroll', 'scrollEnd', 'selected', 'singletap',
+	    'swipe', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'twofingertap'
+	],
+	types: {
+		Contacts: [
+			'Group', 'Person'
+		],
+		Facebook: [
+			'LoginButton'
+		],
+		Filesystem: [
+			'File', 'TempDirectory', 'TempFile'
+		],
+		Media: [
+			'AudioPlayer', 'AudioRecorder', 'Item', 'MusicPlayer', 'Sound', 'VideoPlayer'
+		],
+		Network: [
+			'BonjourBrowser', 'BonjourService', 'HTTPClient', 'TCPSocket'
+		],
+		Platform: [
+			'UUID'
+		],
+		UI: [
+		    '2DMatrix', '3DMatrix', 'ActivityIndicator', 'AlertDialog', 'Animation', 'Button',
+		    'ButtonBar', 'CoverFlowView', 'DashboardItem', 'DashboardView', 'EmailDialog',
+		    'ImageView', 'Label', 'OptionDialog', 'Picker', 'PickerColumn', 'PickerRow',
+		    'ProgressBar', 'ScrollView', 'ScrollableView', 'SearchBar', 'Slider', 'Switch',
+		    'Tab', 'TabGroup', 'TabbedBar', 'TableView', 'TableViewRow', 'TableViewSection',
+		    'TextArea', 'TextField', 'Toolbar', 'View', 'WebView', 'Window'
+		]
+	},
+	maps: {
+		byID: {},
+		byClassName: {},
+		byType: {}
+	},
+	defaults: {
+		byID: {},
+		byClassName: {},
+		byType: {}
+	}
+};
+redux.fn = redux.prototype = {
+	/**
+	 * Returns the objects that match your selector, or the root redux object if you did not provide a selector. Note that only
+	 * objects created by redux constructors can be selected (ex use new Label() instead of Ti.UI.createLabel()).
+	 * @param {Object} selector
+	 */
+	init: function(selector) {
+		if (!selector) {
+			return this;
+		}
+		this.selector = selector;
+		// object
+		if (typeof selector == 'object') {
+			this.context = [this[0] = selector];
+			this.length = 1;
+			return this;
+		}
+		// id
+		if (selector.indexOf('#') === 0) {
+			this.context = [this[0] = redux.data.maps.byID[selector.split('#')[1]]];
+			this.length = this.context != null;
+			return this;
+		}
+		// class name
+		if (selector.indexOf('.') === 0) {
+			this.context = redux.data.maps.byClassName[selector.split('.')[0]];
+			return redux.fn.mergeObjects(this, this.context);
+		}
+		// type
+		this.context = redux.data.maps.byType[selector];
+		return redux.fn.mergeObjects(this, this.context);
+	},
+	/**
+	 * Returns true if the element is in the array.
+	 * @param {Object} element
+	 * @param {Object} array
+	 * @return {Boolean} true if the element is in the array
+	 */
+	contains: function(element, array) {
+		if (array.indexOf) {
+			return array.indexOf(element) !== -1;
+		}
+		for (var i = 0, length = array.length; i < length; i++) {
+			if (array[i] === element) {
+				return true;
+			}
+		}
+		return false;
+	},
+	/**
+	 * Merges the properties of the two objects.
+	 * @param {Object} original
+	 * @param {Object} overrider
+	 */
+	mergeObjects: function mergeObjects(original, overrider) {
+	    if (original == null)
+        	return overrider || {};
+	    if (overrider == null)
+	        return original;
+	    for (var index in overrider) {
+	        if (!overrider.hasOwnProperty(index))
+	            continue;
+	        if (typeof original[index] == 'undefined')
+	            original[index] = overrider[index];
+	        else if (typeof overrider[index] == 'object') {
+	            original[index] = mergeObjects(original[index], overrider[index]);
+	        }
+	    }
+	    return original;
+	},
+	/**
+	 * Adds an event binder that can bind listen events or fire events, similar to how jQuery's events stack works.
+	 * @param {Object} event
+	 */
+	addEventBinder: function (event) {
+	    redux.fn.init.prototype[event] = function () {
+	        if (arguments.length == 0) {
+				for (var i = 0; i < this.context.length; i++) {
+					this.context[i].fireEvent(event, arguments[0]);
+				}
+	        }
+	        else if (arguments[0] instanceof Function) {
+				for (var i = 0; i < this.context.length; i++) {
+					this.context[i].addEventListener(event, arguments[0]);
+				}
+	        }
+	        else {
+				for (var i = 0; i < this.context.length; i++) {
+					this.context[i].fireEvent(event, arguments[0]);
+				}
+	        }
+	        return this;
+	    };
+	},
+	/**
+	 * Starts tracking an element with redux. This lets us select the element later by its ID
+	 * class or type.
+	 * @param {Object} element
+	 */
+	trackElement: function(element) {
+		var maps = redux.data.maps;
+		if (element.id) {
+			maps.byID[element.id] = element;
+		}
+		if (element.className) {
+			if (!maps.byClassName[element.className]) {
+				maps.byClassName[element.className] = [];
+				maps.byClassName[element.className].push(element);
+			}
+			else if (!redux.fn.contains(element, maps.byClassName[element.className])){
+				maps.byClassName[element.className].push(element);
+			}
+		}
+		if (!maps.byType[element.toString()]) {
+			maps.byType[element.toString()] = [];
+			maps.byType[element.toString()].push(element);
+		}
+		else if (!redux.fn.contains(element, maps.byType[element.toString()])){
+			maps.byType[element.toString()].push(element);
+		}
+	},
+	/**
+	 * Set the default properties for an element with a particular ID.
+	 * @param {Object} id
+	 * @param {Object} defaults
+	 */
+	setDefaultByID: function (id, defaults) {
+	    redux.data.defaults.byID[id] = this.mergeObjects(redux.data.defaults.byID[id], defaults);
+	},
+	/**
+	 * Set the default properties for all elements with a particular class name.
+	 * @param {Object} className
+	 * @param {Object} defaults
+	 */
+	setDefaultByClassName: function(className, defaults) {
+	    redux.data.defaults.byClassName[className] = this.mergeObjects(redux.data.defaults.byClassName[className], defaults);
+	},
+	/**
+	 * Set the default properties for all elements of a particular type.
+	 * @param {Object} type
+	 * @param {Object} defaults
+	 */
+	setDefaultByType: function(type, defaults) {
+	    redux.data.defaults.byType[type] = this.mergeObjects(redux.data.defaults.byType[type], defaults);
+	}
+};
+
+/** 
+* Add shorthand events.
+*/
+for (var i = 0; i < redux.data.events.length; i++) {
+    redux.fn.addEventBinder(redux.data.events[i]);
+}
+
+/**
+ * Add natural constructors and shortcuts to setting defaults by type.
+ */
+for (var i in redux.data.types) {
+	// iterate over type namespaces (UI, Network, Facebook, etc)
+    if (!redux.data.types.hasOwnProperty(i)) {
+        continue;
+    }
+	for (var j = 0; j < redux.data.types[i].length; j++) {
+		// iterate over types within parent namespace (Label, LoginButton, HTTPClient, etc)
+	    (function (parent, type) {
+			/**
+			 * Natural constructors for all the different things you can create with Titanium, like Labels, LoginButtons, HTTPClients, etc.
+			 * @param {Object} args
+			 */
+	        this[type] = function cstor(args) {
+	            if (!(this instanceof arguments.callee)) {
+	                return new cstor(args);
+	            }
+				// merge defaults by id
+	            if (args && args.id && redux.data.defaults.byID[args.id]) {
+	                args = redux.fn.mergeObjects(args, redux.data.defaults.byID[args.id]);
+	            }
+				// merge defaults by class name
+	            if (args && args.className && redux.data.defaults.byClassName[args.className]) {
+	                args = redux.fn.mergeObjects(args, redux.data.defaults.byClassName[args.className]);
+	            }
+				// merge defaults by type
+				args = redux.fn.mergeObjects(args, redux.data.defaults.byType[type]);
+				// return created object with merged defaults by type
+				var createdElement = Titanium[parent]['create' + type](args);
+				redux.fn.trackElement(createdElement);
+	            return createdElement;
+	        };
+			/**
+			 * Shortcut to setting defaults by type. Will only apply to objects you create in the future using redux's constructors.
+			 * @param {Object} args
+			 */
+	        this[type].setDefault = function (args) {
+	            redux.fn.setDefaultByType(type, args);
+	        };
+	    })(i, redux.data.types[i][j]);
+	}
+}
+
+/**
+ * Create a shorthand for redux itself -- $, if it is available.
+ */
+this.$ = this.$ || redux;

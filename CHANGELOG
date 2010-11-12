@@ -1,3 +1,13 @@
+v3  11/11/2010
+	Fixed issue 1 -- Nested objects in JSS are now supported in all cases
+	Fixed issue 2 -- Class names are now supported in JSS
+	Cleaned up the redux namespace
+	Expanded natural constructor to support anything created by Ti.*.create*, like Ti.Network.createHTTPClient
+	JSS can now set defaults for non UI elements, like HTTPClients (so long as the objects are constructed through redux)
+	Element selection by type, class, and ID now works like jQuery -- $('.myButton') will return an array of objects matching the selector
+	JSS now supports comments taking the form /* a comment */
+	Updated the README with the new goodies and updated old ones
+	
 v2	11/09/2010
 	JSS support! -- include easy localization
 	Added a wrapper context $ function so we can support prototyping
