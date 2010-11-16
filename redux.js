@@ -1,16 +1,16 @@
 /*!
-* Appcelerator Redux v3 by Dawson Toth
+* Appcelerator Redux v4 by Dawson Toth
 * http://tothsolutions.com/
 */
 
 /**
 * Create shorthand for commonly used functions.
 */
-var info = Titanium.API.info,
-	error = Titanium.API.error,
-	warn = Titanium.API.warn,
-	log = Titanium.API.log,
-	include = Titanium.include;
+var info = Ti.API.info,
+	error = Ti.API.error,
+	warn = Ti.API.warn,
+	log = Ti.API.log,
+	include = Ti.include;
 
 /**
 * JSS -- separate and simplify all the repeated properties you use in your code.
@@ -22,6 +22,7 @@ function includeJSS() {
         eval(parseJSS(contents));
     }
 }
+
 /**
 * Turns a string of JSS into a string that can be safely evaluated.
 * 
@@ -29,18 +30,17 @@ function includeJSS() {
 * http://ejohn.org/blog/javascript-micro-templating/
 */
 function parseJSS(contents) {
-    return (';' + contents) // prefix ; to eliminate fringe case
+    return ('\n' + contents)
         .split('}').join('});') // close off everywhere we find a curly brace (yes, even nested braces)
-        .replace(/}\);\s*}\);/igm, '}}\);') // fix any nested braces that we over closed
-        .replace(/\/\*.*?\*\//igm, '') // remove any comments
-        .replace(/}\);,/igm, '},') // fix any other nested braces that we over closed
+        .replace(/}\);\s*}\);/gm, '}}\);').replace(/}\);,/g, '},') // fix any nested braces that we over closed
+        .replace(/\n\s+/gm, '\n') // remove extra white space
         .split('=').join('==') // replace the equal signs in attributes with the proper comparison operator
         .split('!==').join('!=') // fix extra equal sign we added to inequality operator
         .split('[').join('[Ti.') // add the Ti. namespace to all attributes
-        .replace(/;(\s*.+?)\[(.+?)\]\s*{/igm, ';if($2)$1{') // finish replacing attributes with an if statement
-        .replace(/\.([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByClassName("$1",{') // replace all .classNames with a call to redux.setDefaultByClassName
-        .replace(/\#([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByID("$1",{') // replace all #ids with a call to redux.fn.setDefaultByID
-        .replace(/\s*([a-z0-9_-]+)\s*{/igm, 'redux.fn.setDefaultByType("$1",{'); // replace the other selects with a call to redux.fn.setDefaultByType
+        .replace(/\n\[([^\]]+)\]/gm, 'if($1)\n') // finish replacing attributes with an if statement
+        .replace(/\n\.([^{]+)\s*\{/gm, 'redux.fn.setDefaultByClassName("$1",{') // replace all .classNames with a call to redux.setDefaultByClassName
+        .replace(/\n#([^{]+)\s*\{/gm, 'redux.fn.setDefaultByID("$1",{') // replace all #ids with a call to redux.fn.setDefaultByID
+        .replace(/\n([a-zA-Z0-9_-]+)\s*\{/gm, 'redux.fn.setDefaultByType("$1",{');   // replace the other selects with a call to redux.fn.setDefaultByType
 }
 
 /**
@@ -260,7 +260,7 @@ for (var i in redux.data.types) {
 		// iterate over types within parent namespace (Label, LoginButton, HTTPClient, etc)
 	    (function (parent, type) {
 			/**
-			 * Natural constructors for all the different things you can create with Titanium, like Labels, LoginButtons, HTTPClients, etc.
+			 * Natural constructors for all the different things you can create with Ti, like Labels, LoginButtons, HTTPClients, etc.
 			 * @param {Object} args
 			 */
 	        this[type] = function cstor(args) {
@@ -278,7 +278,7 @@ for (var i in redux.data.types) {
 				// merge defaults by type
 				args = redux.fn.mergeObjects(args, redux.data.defaults.byType[type]);
 				// return created object with merged defaults by type
-				var createdElement = Titanium[parent]['create' + type](args);
+				var createdElement = Ti[parent]['create' + type](args);
 				redux.fn.trackElement(createdElement);
 	            return createdElement;
 	        };

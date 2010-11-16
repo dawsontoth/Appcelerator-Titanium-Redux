@@ -1,3 +1,7 @@
+v4  11/16/2010
+	Fixed issue 4 -- Slow JSS parsing
+	Altered attributes to now come before their selectors, instead of after (see the README for more information)
+
 v3  11/11/2010
 	Fixed issue 1 -- Nested objects in JSS are now supported in all cases
 	Fixed issue 2 -- Class names are now supported in JSS
