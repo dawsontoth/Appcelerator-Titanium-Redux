@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v4 by Dawson Toth
+* Appcelerator Redux v4.1 by Dawson Toth
 * http://tothsolutions.com/
 */
 
@@ -38,8 +38,8 @@ function parseJSS(contents) {
         .split('!==').join('!=') // fix extra equal sign we added to inequality operator
         .split('[').join('[Ti.') // add the Ti. namespace to all attributes
         .replace(/\n\[([^\]]+)\]/gm, 'if($1)\n') // finish replacing attributes with an if statement
-        .replace(/\n\.([^{]+)\s*\{/gm, 'redux.fn.setDefaultByClassName("$1",{') // replace all .classNames with a call to redux.setDefaultByClassName
-        .replace(/\n#([^{]+)\s*\{/gm, 'redux.fn.setDefaultByID("$1",{') // replace all #ids with a call to redux.fn.setDefaultByID
+        .replace(/\n\.([^{]+)\s*\{/gm, 'redux.fn.setDefaultByClassName("$1".split(" ").join(""),{') // replace all .classNames with a call to redux.setDefaultByClassName
+        .replace(/\n#([^{]+)\s*\{/gm, 'redux.fn.setDefaultByID("$1".split(" ").join(""),{') // replace all #ids with a call to redux.fn.setDefaultByID
         .replace(/\n([a-zA-Z0-9_-]+)\s*\{/gm, 'redux.fn.setDefaultByType("$1",{');   // replace the other selects with a call to redux.fn.setDefaultByType
 }
 

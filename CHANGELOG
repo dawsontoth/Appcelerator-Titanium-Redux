@@ -1,3 +1,5 @@
+v4.1	Removed extra spacing added to class names and IDs
+
 v4  11/16/2010
 	Fixed issue 4 -- Slow JSS parsing
 	Altered attributes to now come before their selectors, instead of after (see the README for more information)
