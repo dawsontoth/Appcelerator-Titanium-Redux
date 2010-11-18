@@ -74,7 +74,15 @@ and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respec
 **Redux Code**		
 <pre>var label = new Label();</pre>
 
+**Warning**
+On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use. By using redux, it can't tell which to include or exclude. But we can fix this easily by giving it blatant hints in our app.js, like this:
+<pre>
+/* Trick Titanium into including the packages we want */
+Titanium.UI.createLabel;
+Titanium.UI.createWebView;
+</pre>
 
+Now we can use the short redux constructors without worrying about Titanium accidentally excluding something we are using.
 
 SELECTING ELEMENTS
 ---------------------
