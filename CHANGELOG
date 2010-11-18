@@ -1,3 +1,10 @@
+v5 11/18/2010
+	Added two new include functions: includeJSSGlobal and includeGlobal
+	JSS now caches cross context, so the parsing performance hit is reduced
+	Cleaned up the namespacing a bit more; all core functionality is in the redux namespace with shorthands for commonly used functions like includeJSS
+	Tweaked spacing in code for cleaner look
+	Updated JSDoc for several of the functions
+
 v4.1	Removed extra spacing added to class names and IDs
 
 v4  11/16/2010

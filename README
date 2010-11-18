@@ -2,68 +2,98 @@ Redux has a simple goal:
 To reduce the amount of code you need to write when using Appcelerator Titanium.
 
 To use its features, include the redux.js or redux.min.js file at the top of your app.js:
-	Ti.include('redux.js');
 
------------------------------------------------------------------------------------------
-- FEATURES
------------------------------------------------------------------------------------------
+<pre>
+Ti.include('redux.js');
 
-----------------------------------------------
-- SHORTHAND FOR COMMON FUNCTIONS
-----------------------------------------------
+</pre>
+
+
+FEATURES
+====================
+
+
+SHORTHAND FOR COMMON FUNCTIONS
+---------------------
 
 Some functions you use all the time. Redux makes them shorter, and easier to type.
 
-_Normal Code					
-Titanium.API.info('hi');		
+**Normal Code**					
+<pre>Titanium.API.info('hi');		
 Titanium.API.error('hi');		
 Titanium.API.warn('hi');		
 Titanium.API.log('hi');			
-Titanium.include('foo.js');		
+Titanium.include('foo.js');</pre>		
 
-_Redux Code		
-info('hi');		
+**Redux Code**		
+<pre>info('hi');		
 error('hi');		
 warn('hi');		
 log('hi');		
-include('foo.js');	
+include('foo.js');</pre>	
 	
+MORE POWERFUL INCLUDE FUNCTIONS
 ----------------------------------------------
-- UI CONSTRUCTION
-----------------------------------------------
+
+Include files or JSS across all of your JavaScript contexts, so long as they have redux loaded.
+
+**Normal Code**
+<pre>
+/* In every file */
+Ti.include('a.js');
+Ti.include('b.js');
+Ti.include('c.js');
+</pre>
+
+**Redux Code**
+<pre>
+/* In your app.js */
+Ti.include('redux.js');
+includeGlobal('a.js');
+includeGlobal('b.js');
+includeGlobal('c.js');
+includeJSSGlobal('d.jss');
+
+/* In your other js files */
+Ti.include('redux.js');
+</pre>
+
+
+UI CONSTRUCTION
+---------------------
 
 Create new Ti elements using the new Constructor() syntax you're used to in JavaScript.
 Note that by making your elements this way, you also get to take advantage of other
 Redux features like JSS, default properties, and more. You can use this syntax for any
-element normally created using the syntax Ti.*.create*. For example, Ti.Network.createHTTPClient()
+element normally created using the syntax Ti.\*.create\*. For example, Ti.Network.createHTTPClient()
 and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respectively.
 
-_Normal Code		
-var label = Titanium.UI.createLabel();
+**Normal Code**		
+<pre>var label = Titanium.UI.createLabel();</pre>
 
-_Redux Code		
-var label = new Label();
+**Redux Code**		
+<pre>var label = new Label();</pre>
 
 
-----------------------------------------------
-- SELECTING ELEMENTS
-----------------------------------------------
+
+SELECTING ELEMENTS
+---------------------
 
 When you create elements using redux, you can select them out later much like you can in
 the popular JavaScript library jQuery.
 
-_Normal Code		
-Not Supported		
+**Normal Code**		
+<pre>Not Supported</pre>		
 
-_Redux Code		
-var label = new Label({ className: 'labelClass', id: 'labelWithID' });	
+**Redux Code**		
+<pre>var label = new Label({ className: 'labelClass', id: 'labelWithID' });	
 var allMyLabels = $('Label');	
 var labelsWithClass = $('.labelClass');	
 var labelByID = $('#labelWithID');	
-alert(labelByID[0] = label);	
+alert(labelByID[0] = label);</pre>	
 
-----------------------------------------------
-- UI PROPERTY DEFAULTS BY ELEMENT TYPE
+
+UI PROPERTY DEFAULTS BY ELEMENT TYPE
 ----------------------------------------------
 
 You can specify default properties for your UI elements. This lets you specify properties
@@ -73,79 +103,80 @@ your business logic. Note that property defaults by element type are considered 
 important than property defaults by ID or properties passed in to the constructor, and can be
 overridden by either of these.
 
-_Normal Code		
-Not Supported		
+**Normal Code**		
+<pre>Not Supported</pre>		
 
-_Redux Code		
-Label.setDefault({ font: {fontWeight: 'bold' } });		
+**Redux Code**		
+<pre>Label.setDefault({ font: {fontWeight: 'bold' } });		
 var label = new Label();		
-alert(label.font.fontWeight == 'bold');		
+alert(label.font.fontWeight == 'bold');</pre>		
 
 
-----------------------------------------------
-- UI PROPERTY DEFAULTS BY ID AND CLASS NAME
+UI PROPERTY DEFAULTS BY ID AND CLASS NAME
 ----------------------------------------------
 
 Using a similar method to setting UI Property Defaults by Element Type, you can set them
 for your UI elements by their IDs or class names. Note that property defaults by ID are considered more
 important than default properties by element type and class names, and will override them.
 
-_Normal Code	
-Not Supported	
+**Normal Code**	
+<pre>Not Supported</pre>	
 
-_Redux Code		
-$.setDefaultByID('myID', { text: 'Hello, World!', color: 'red' });	
+**Redux Code**		
+<pre>$.setDefaultByID('myID', { text: 'Hello, World!', color: 'red' });	
 $.setDefaultByClassName('myClass', { font: { fontSize: 12 }, color: 'green' });
 var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
 alert(label.text == 'Hello, World!');	
 alert(label.color == 'blue');
-alert(label.font.fontSize == 12);
+alert(label.font.fontSize == 12);</pre>
 
 
-----------------------------------------------
-- EVENT BINDING
+
+EVENT BINDING
 ----------------------------------------------
 
 Bind events in a more natural way. Note the wrapping $().
 
-_Normal Code	
-var button = Titanium.UI.createButton({ title: 'Click Me!' });	
+**Normal Code**	
+<pre>var button = Titanium.UI.createButton({ title: 'Click Me!' });	
 button.addEventListener('click', function() { alert('clicked!'); });	
 button.fireEvent('click');	
-button.fireEvent('click', {src: 'me'});	
+button.fireEvent('click', {src: 'me'});</pre>	
 
-_Redux Code	
-var button = new Button({ title: 'Click Me!' });	
+**Redux Code**	
+<pre>var button = new Button({ title: 'Click Me!' });	
 $(button).click(function() { alert('clicked!'); });	
          .click();	
-         .click({src: 'me'});	
+         .click({src: 'me'});</pre>	
 
 
 You can add support for custom events.	
-_Normal Code	
-button.addEventListener('myCustomEvent', function() { });	
+**Normal Code**	
+<pre>button.addEventListener('myCustomEvent', function() { });</pre>	
 
-_Redux Code	
-$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
-$(button).myCustomEvent(function() { });	
+**Redux Code**	
+<pre>$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
+$(button).myCustomEvent(function() { });</pre>	
 
 
-----------------------------------------------
-- JSS
+JSS
 ----------------------------------------------
 
 JSS, or JavaScript Style Sheets, let you create CSS-like rules to style your UI elements.
 Note that JSS can only style elements you create using Redux's method of creating elements,
 and that this isn't actual CSS.
 
-_Normal Code
+**Normal Code**
 Not Supported until Version 1.5 (even then, some features here won't be supported)
 
-_Redux Code for Including JSS from your app.js (or any .js file)
-includeJSS('common.jss');
+**Redux Code** for Including JSS from your app.js (or any .js file)
+<pre>includeJSS('common.jss');</pre>
 
-_Redux Code for Styling Elements from common.jss (or any .jss file)
-Window {
+**Redux Code** for including JSS across all of your .js files, so long as they include redux
+<pre>includeJSSGlobal('common.jss');</pre>
+
+**Redux Code** for Styling Elements from common.jss (or any .jss file)
+<pre>Window {
 	backgroundColor: '#fff'
 }
 Label {
@@ -173,7 +204,7 @@ Label {
 /* select by className */
 .myClass {
 	text: 'Set by class'
-}
+}</pre>
 
 
 Here are some key features to note--you'll want to use them:
@@ -192,9 +223,8 @@ Here are some things you CANNOT do yet, but that will be supported soon:
 	2) Chaining attributes (ie Window[Platform.osname="iphone"][Platform.osname="ipad"]).
 
 
------------------------------------------------------------------------------------------
-- CONTACT INFORMATION
------------------------------------------------------------------------------------------
+CONTACT INFORMATION
+===========================
 
 Redux was made by Dawson Toth from TothSolutions, LLC. (www.tothsolutions.com).
 TothSolutions, LLC. uses Appcelerator every day to create mobile applications for
