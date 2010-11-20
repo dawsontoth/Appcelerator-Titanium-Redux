@@ -1,3 +1,11 @@
+v6 11/20/2010
+  Simplified the "setDefault" functions to be a single function call that takes in a selector
+  Implemented issue 5 -- JSS now supports comma delimited selectors (ex "#Label1,#Label2,.Label3 { text: 'Hi!' }")
+  Fixed issue 7 -- includeJSSGlobal broken by subdirectories
+  Implemented issue 8 -- Create test / demo project
+  Included json.org's JSON2 functions as redux.JSON to contend with Titanium's misimplementation on Android
+  Tweaked global storage to use json.org's JSON2 functions instead of Titanium's
+
 v5 11/18/2010
 	Added two new include functions: includeJSSGlobal and includeGlobal
 	JSS now caches cross context, so the parsing performance hit is reduced

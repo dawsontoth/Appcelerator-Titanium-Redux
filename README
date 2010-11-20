@@ -40,18 +40,14 @@ Include files or JSS across all of your JavaScript contexts, so long as they hav
 **Normal Code**
 <pre>
 /* In every file */
-Ti.include('a.js');
-Ti.include('b.js');
-Ti.include('c.js');
+Ti.include('a.js', 'b.js', 'c.js');
 </pre>
 
 **Redux Code**
 <pre>
 /* In your app.js */
 Ti.include('redux.js');
-includeGlobal('a.js');
-includeGlobal('b.js');
-includeGlobal('c.js');
+includeGlobal('a.js', 'b.js', 'c.js');
 includeJSSGlobal('d.jss');
 
 /* In your other js files */
@@ -120,7 +116,7 @@ var label = new Label();
 alert(label.font.fontWeight == 'bold');</pre>		
 
 
-UI PROPERTY DEFAULTS BY ID AND CLASS NAME
+UI PROPERTY DEFAULTS BY SELECTOR
 ----------------------------------------------
 
 Using a similar method to setting UI Property Defaults by Element Type, you can set them
@@ -131,8 +127,8 @@ important than default properties by element type and class names, and will over
 <pre>Not Supported</pre>	
 
 **Redux Code**		
-<pre>$.setDefaultByID('myID', { text: 'Hello, World!', color: 'red' });	
-$.setDefaultByClassName('myClass', { font: { fontSize: 12 }, color: 'green' });
+<pre>$.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
+$.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
 var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
 alert(label.text == 'Hello, World!');	
 alert(label.color == 'blue');
@@ -207,11 +203,15 @@ Label {
     text: 'Hello, World!'
 }
 [Platform.locale="es"] #HelloWorld {
-    text: '¡Bienvenido, Mundo!'
+    text: 'Bienvenido, Mundo!'
 }
-/* select by className */
+/* by className */
 .myClass {
 	text: 'Set by class'
+}
+/* by multiple selectors */
+.selector1, #selector2, Label {
+  text: 'Set for all three selectors'
 }</pre>
 
 
@@ -224,11 +224,9 @@ Here are some key features to note--you'll want to use them:
 	6) White space doesn't matter; put it where you want it.
 	7) You can localize your app using the [Platform.locale="whatever"] attribute.
 	8) The includeJSS function can take in multiple files or just one; it's up to you.
-	9) #HelloWorld has higher precedence than the Label rule.
-
-Here are some things you CANNOT do yet, but that will be supported soon:
-	1) Chaining selectors (ie Window, Label { backgroundColor: '#fff' }).
-	2) Chaining attributes (ie Window[Platform.osname="iphone"][Platform.osname="ipad"]).
+  9) #HelloWorld has higher precedence than the Label rule.
+  10) Chain selectors to reduce the amount of JSS you need to write (ie Window, Label { backgroundColor: '#fff' }).
+  11) Chaining attributes (ie [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}).
 
 
 CONTACT INFORMATION
