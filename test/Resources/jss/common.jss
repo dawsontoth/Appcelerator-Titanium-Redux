@@ -19,3 +19,13 @@ Label {
   top: 0,
   bottom: 0
 }
+
+.red_text {
+  color: '#f00'
+}
+.green_text {
+  color: '#0f0'
+}
+.big_text {
+  font: { fontSize: 48 }
+}

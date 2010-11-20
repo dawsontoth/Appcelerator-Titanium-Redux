@@ -224,9 +224,10 @@ Here are some key features to note--you'll want to use them:
 	6) White space doesn't matter; put it where you want it.
 	7) You can localize your app using the [Platform.locale="whatever"] attribute.
 	8) The includeJSS function can take in multiple files or just one; it's up to you.
-  9) #HelloWorld has higher precedence than the Label rule.
-  10) Chain selectors to reduce the amount of JSS you need to write (ie Window, Label { backgroundColor: '#fff' }).
-  11) Chaining attributes (ie [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}).
+	9) #HelloWorld has higher precedence than the Label rule.
+	10) Chain selectors to reduce the amount of JSS you need to write (ie Window, Label { backgroundColor: '#fff' }).
+	11) Chaining attributes (ie [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}).
+	12) Specify multiple class names on your objects, and redux will pick up each class's styles. Just like you can in HTML (ex className: 'big_text red_text').
 
 
 CONTACT INFORMATION

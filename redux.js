@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v6 by Dawson Toth
+* Appcelerator Redux v6.1 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -468,8 +468,11 @@ for (var i in redux.data.types) {
                         args = redux.fn.mergeObjects(args, redux.data.defaults.byID[args.id]);
                     }
                     // merge defaults by class name
-                    if (args && args.className && redux.data.defaults.byClassName[args.className]) {
-                        args = redux.fn.mergeObjects(args, redux.data.defaults.byClassName[args.className]);
+                    if (args && args.className) {
+                        var classes = args.className.split(' ');
+                        for (var k = 0; k < classes.length; k++) {
+                            args = redux.fn.mergeObjects(args, redux.data.defaults.byClassName[classes[k]])
+                        }
                     }
                     // merge defaults by type
                     args = redux.fn.mergeObjects(args, redux.data.defaults.byType[type]);
