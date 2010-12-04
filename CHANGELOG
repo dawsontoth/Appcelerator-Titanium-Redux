@@ -1,3 +1,9 @@
+v7 12/02/2010
+	Added support for the latest 1.5 Titanium Mobile master branch
+	Renamed JSS to RJSS to avoid conflicts with Titanium's JSS in 1.5
+	Added support for attribute blocks (ex [Platform.lang='en']{ #foo{} #bar{} })
+	RJSS parsing is now done in a single pass, greatly improving its performance
+
 v6.1
 	Actually implemented issue 5 -- specify multiple class names on your objects like you can in HTML (ex className: 'big_text red_text')
 

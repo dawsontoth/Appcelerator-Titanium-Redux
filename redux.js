@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v6.1 by Dawson Toth
+* Appcelerator Redux v7 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -203,13 +203,15 @@ redux.data = {
         byClassName: {},
         byType: {}
     },
+    globalVariables: {
+        files: '', rjss: '', parsedrjss: ''
+    },
     global: {
         /* dynamically generated based on variables in Ti.App.redux */
-        jss: '', files: '', parsedjss: ''
     }
 };
-for (var i in redux.data.global) {
-    if (redux.data.global.hasOwnProperty(i)) {
+for (var i in redux.data.globalVariables) {
+    if (redux.data.globalVariables.hasOwnProperty(i)) {
         (function (i) {
             redux.data.global['get' + i] = function () {
                 if (!Ti.App['redux-' + i]) {
@@ -275,57 +277,115 @@ redux.fn = redux.prototype = {
         redux.data.global.setfiles(files);
     },
     /**
-     * Turns a string of JSS into JavaScript that can be safely evaluated. JSS is a way to create JavaScript
+     * Turns a string of RJSS into JavaScript that can be safely evaluated. RJSS is a way to customize JavaScript
      * objects quickly, and is primarily used to style your UI elements.
      *
-     * Inspired by, but not derived from, John Resig's Micro-Templating
-     * http://ejohn.org/blog/javascript-micro-templating/
-     *
-     * @param {String} The raw JSS contents to parse into executable JavaScript
+     * @param {String} The raw RJSS contents to parse into executable JavaScript
      * @returns Executable JavaScript
      */
-    parseJSS: function (file) {
-        var parsedjss = redux.data.global.getparsedjss() || {};
-        if (parsedjss[file]) {
-            return parsedjss[file];
+    parseRJSS: function (file) {
+        var parsedrjss = redux.data.global.getparsedrjss() || {};
+        if (parsedrjss[file]) {
+            return parsedrjss[file];
         }
-        var parsed = ('({\n}\n' + Ti.Filesystem.getFile(file).read()) // append nonesense to avoid fringe cases in our regex below
-        .replace(/\/\*[^*]*\*\//gm, '') // replace C style comments
-        .split('}').join('});\n') // close off everywhere we find a curly brace (yes, even nested braces)
-        .replace(/\}\);\s*\}\);/gm, '}});\n').replace(/\}\);\s*,/g, '},') // fix any nested braces that we over closed
-        .replace(/\n\s+/gm, '\n') // remove extra white space
-        .split('=').join('==') // replace the equal signs in attributes with the proper comparison operator
-        .split('!==').join('!=') // fix extra equal sign we added to inequality operator
-        .split('[').join('[Ti.') // add the Ti. namespace to all attributes
-        .replace(/\n\[([^\]]+)\]/gm, '\nif($1)\n') // finish replacing attributes with an if statement
-        .replace(/\n([#.,_\-\sA-Za-z0-9]+)\{/gm, '\nredux.fn.setDefault("$1",{'); // replace all selectors with a call to redux.setDefault
-        parsedjss[file] = parsed;
-        redux.data.global.setparsedjss(parsedjss);
-        return parsed;
+        var rjss = (Ti.Filesystem.getFile(file).read() + '').replace(/[\r\t\n]/g, ' ');
+        var result = '', length = rjss.length, braceDepth = 0;
+        var inComment = false, inSelector = false, inAttributeBrace = false;
+        var canStartSelector = true, canBeAttributeBrace = false;
+
+        for (var i = 0; i < length; i++) {
+            var next = rjss[i+1], current = rjss[i], last = rjss[i-1];
+            if (inComment) {
+                if (current == '/' && last == '*') {
+                    inComment = false;
+                }
+                continue;
+            }
+            switch (current) {
+                case ' ':
+                    result += ' ';
+                    break;
+                case '/':
+                    inComment = next == '*';
+                    result += inComment ? '' : '/';
+                    break;
+                case '[':
+                    canStartSelector = false;
+                    result += 'if (Ti.';
+                    break;
+                case '=':
+                    result += (last != '!' && last != '<' && last != '>') ? '==' : '=';
+                    break;
+                case ']':
+                    canStartSelector = true;
+                    result += ')';
+                    canBeAttributeBrace = true;
+                    break;
+                case '{':
+                    if (canBeAttributeBrace) {
+                        canBeAttributeBrace = false;
+                        inAttributeBrace = true;
+                    } else {
+                        if (inSelector) {
+                            inSelector = false;
+                            result += '",';
+                        }
+                        braceDepth += 1;
+                    }
+                    result += '{';
+                    break;
+                case '}':
+                    braceDepth -= 1;
+                    result += '}';
+                    switch (braceDepth) {
+                        case 0:
+                            result += ');';
+                            canStartSelector = true;
+                            break;
+                        case -1:
+                            inAttributeBrace = false;
+                            braceDepth = 0;
+                            break;
+                    }
+                    break;
+                default:
+                    canBeAttributeBrace = false;
+                    if (braceDepth == 0 && canStartSelector) {
+                        canStartSelector = false;
+                        inSelector = true;
+                        result += 'redux.fn.setDefault("';
+                    }
+                    result += current;
+                    break;
+            }
+        }
+        parsedrjss[file] = result;
+        redux.data.global.setparsedrjss(parsedrjss);
+        return result;
     },
     /**
-     * Includes and parses one or more JSS files. Styles will be applied to any elements you create after calling this.
-     * @param {Array} One or more JSS files to include and parse
+     * Includes and parses one or more RJSS files. Styles will be applied to any elements you create after calling this.
+     * @param {Array} One or more RJSS files to include and parse
      */
-    includeJSS: function () {
+    includeRJSS: function () {
         for (var i = 0; i < arguments.length; i++) {
-            eval(redux.fn.parseJSS(arguments[i]));
+            eval(redux.fn.parseRJSS(arguments[i]));
         }
     },
     /**
-     * Includes and parses one or more JSS file in every JavaScript context that will exist, so long as
-     * redux is loaded within it.
-     * @param {Array} One or more JSS files to include globally
+     * Includes and parses one or more RJSS file in every JavaScript context that will exist, so long as
+     * you include redux in each of them.
+     * @param {Array} One or more RJSS files to include globally
      */
-    includeJSSGlobal: function () {
-        var files = redux.data.global.getjss() || [];
+    includeRJSSGlobal: function () {
+        var files = redux.data.global.getrjss() || [];
         for (var i = 0; i < arguments.length; i++) {
             if (!redux.fn.contains(arguments[i], files)) {
                 files.push(arguments[i]);
-                redux.fn.includeJSS(arguments[i]);
+                redux.fn.includeRJSS(arguments[i]);
             }
         }
-        redux.data.global.setjss(files);
+        redux.data.global.setrjss(files);
     },
     /**
      * Returns true if the element is in the array.
@@ -411,7 +471,7 @@ redux.fn = redux.prototype = {
         }
     },
     /**
-     * Set the default properties for any elements matched by the JSS selector.
+     * Set the default properties for any elements matched by the RJSS selector.
      * @param {Object} selector
      * @param {Object} defaults
      */
@@ -471,7 +531,7 @@ for (var i in redux.data.types) {
                     if (args && args.className) {
                         var classes = args.className.split(' ');
                         for (var k = 0; k < classes.length; k++) {
-                            args = redux.fn.mergeObjects(args, redux.data.defaults.byClassName[classes[k]])
+                            args = redux.fn.mergeObjects(args, redux.data.defaults.byClassName[classes[k]]);
                         }
                     }
                     // merge defaults by type
@@ -498,21 +558,21 @@ for (var i in redux.data.types) {
  */
 var includeGlobal = redux.fn.includeGlobal;
 /**
- * Includes and parses one or more JSS files. Styles will be applied to any elements you create after calling this.
+ * Includes and parses one or more RJSS files. Styles will be applied to any elements you create after calling this.
  */
-var includeJSS = redux.fn.includeJSS;
+var includeRJSS = redux.fn.includeRJSS;
 /**
- * Includes a JSS file in every JavaScript context with redux loaded that exists or that will exist.
+ * Includes a RJSS file in every JavaScript context with redux loaded that exists or that will exist.
  */
-var includeJSSGlobal = redux.fn.includeJSSGlobal;
+var includeRJSSGlobal = redux.fn.includeRJSSGlobal;
 
 /**
- * Include any normal files or JSS files from before this context existed.
+ * Include any normal files or RJSS files from before this context existed.
  */
 (function () {
-    var jssFiles = redux.data.global.getjss() || [];
-    for (var i = 0; i < jssFiles.length; i++) {
-        includeJSS(jssFiles[i]);
+    var rjssFiles = redux.data.global.getrjss() || [];
+    for (var i = 0; i < rjssFiles.length; i++) {
+        includeRJSS(rjssFiles[i]);
     }
     var files = redux.data.global.getfiles() || [];
     for (var j = 0; j < files.length; j++) {

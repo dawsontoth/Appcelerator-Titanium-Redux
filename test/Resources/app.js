@@ -1,8 +1,8 @@
 Ti.include('redux.js');
 
-/* Include our JSS */
-includeJSSGlobal('jss/common.jss');
-includeJSSGlobal('jss/localize.jss');
+/* Include our RJSS */
+includeRJSSGlobal('rjss/common.rjss');
+includeRJSSGlobal('rjss/localize.rjss');
 
 /* Tell the compiler which packages we are going to use */
 Ti.UI.createTabGroup;
@@ -22,7 +22,7 @@ tabGroup.addTab(new Tab({
         id: 'Window1',
         url: 'tabs/tab1.js'
     })
-}));
+})); 
 
 tabGroup.addTab(new Tab({
     id: 'Tab2',

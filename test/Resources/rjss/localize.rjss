@@ -1,0 +1,18 @@
+/* English */
+[Platform.locale="en"] {
+  #Window1 { title: 'Tab One' }
+  #Window2 { title: 'Tab Two' }
+  #Tab1 { title: 'Tab One' }
+  #Tab2 { title: 'Tab Two' }
+  #Label1 { text: 'I am Window One' }
+  #Label2 { text: 'I am Window Two' }
+}
+/* Spanish */
+[Platform.locale="es"] {
+  #Window1 { title: 'Solapa Uno' }
+  #Window2 { title: 'Solapa Dos' }
+  #Tab1 { title: 'Solapa Uno' }
+  #Tab2 { title: 'Solapa Dos' }
+  #Label1 { text: 'Soy la Ventana Uno' }
+  #Label2 { text: 'Soy la Ventana Dos' }
+}

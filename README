@@ -1,11 +1,10 @@
 Redux has a simple goal:
 To reduce the amount of code you need to write when using Appcelerator Titanium.
 
-To use its features, include the redux.js or redux.min.js file at the top of your app.js:
+To use its features, include the redux.js or redux.min.js file at the top of your app.js and every child window's js:
 
 <pre>
 Ti.include('redux.js');
-
 </pre>
 
 
@@ -35,7 +34,7 @@ include('foo.js');</pre>
 MORE POWERFUL INCLUDE FUNCTIONS
 ----------------------------------------------
 
-Include files or JSS across all of your JavaScript contexts, so long as they have redux loaded.
+Include files or RJSS globally, across all of your JavaScript contexts, as long as they have redux included.
 
 **Normal Code**
 <pre>
@@ -48,7 +47,7 @@ Ti.include('a.js', 'b.js', 'c.js');
 /* In your app.js */
 Ti.include('redux.js');
 includeGlobal('a.js', 'b.js', 'c.js');
-includeJSSGlobal('d.jss');
+includeRJSSGlobal('d.rjss');
 
 /* In your other js files */
 Ti.include('redux.js');
@@ -71,7 +70,10 @@ and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respec
 <pre>var label = new Label();</pre>
 
 **Warning**
-On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use. By using redux, it can't tell which to include or exclude. But we can fix this easily by giving it blatant hints in our app.js, like this:
+On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use.
+By using redux, it can't tell which to include or exclude. But we can fix this easily by giving it
+blatant hints in our app.js, like this:
+
 <pre>
 /* Trick Titanium into including the packages we want */
 Titanium.UI.createLabel;
@@ -83,7 +85,7 @@ Now we can use the short redux constructors without worrying about Titanium acci
 SELECTING ELEMENTS
 ---------------------
 
-When you create elements using redux, you can select them out later much like you can in
+When you create elements using redux, you can select them later much like you can in
 the popular JavaScript library jQuery.
 
 **Normal Code**		
@@ -149,8 +151,8 @@ button.fireEvent('click', {src: 'me'});</pre>
 
 **Redux Code**	
 <pre>var button = new Button({ title: 'Click Me!' });	
-$(button).click(function() { alert('clicked!'); });	
-         .click();	
+$(button).click(function() { alert('clicked!'); })
+         .click()
          .click({src: 'me'});</pre>	
 
 
@@ -163,26 +165,27 @@ You can add support for custom events.
 $(button).myCustomEvent(function() { });</pre>	
 
 
-JSS
+RJSS
 ----------------------------------------------
 
-JSS, or JavaScript Style Sheets, let you create CSS-like rules to style your UI elements.
-Note that JSS can only style elements you create using Redux's method of creating elements,
+RJSS, or Redux JavaScript Style Sheets, let you create CSS-like rules to style your UI elements.
+Note that RJSS can only style elements you create using Redux's method of creating elements,
 and that this isn't actual CSS.
 
 **Normal Code**
-Not Supported until Version 1.5 (even then, some features here won't be supported)
+Not Supported until Version 1.5 (even then, some features Redux has won't be supported)
 
-**Redux Code** for Including JSS from your app.js (or any .js file)
-<pre>includeJSS('common.jss');</pre>
+**Redux Code** for Including RJSS from your app.js (or any .js file)
+<pre>includeRJSS('common.rjss');</pre>
 
-**Redux Code** for including JSS across all of your .js files, so long as they include redux
-<pre>includeJSSGlobal('common.jss');</pre>
+**Redux Code** for including RJSS across all of your .js files, as long as they have redux included
+<pre>includeRJSSGlobal('common.rjss');</pre>
 
-**Redux Code** for Styling Elements from common.jss (or any .jss file)
+**Redux Code** for Styling Elements from common.rjss (or any .rjss file)
 <pre>Window {
 	backgroundColor: '#fff'
 }
+/* add comments! use familiar c style comment blocks like this one */
 Label {
 	backgroundColor: '#faa',
 	color: '#333'
@@ -199,35 +202,50 @@ Label {
 	height: 70,
 	top: 50
 }
-[Platform.locale="en"] #HelloWorld {
-    text: 'Hello, World!'
-}
-[Platform.locale="es"] #HelloWorld {
-    text: 'Bienvenido, Mundo!'
-}
 /* by className */
-.myClass {
-	text: 'Set by class'
+.myClassName {
+	text: 'Set by class name'
 }
 /* by multiple selectors */
 .selector1, #selector2, Label {
-  text: 'Set for all three selectors'
-}</pre>
+	text: 'Set for all three selectors'
+}
+/* attribute with its own block */
+[Platform.locale="en"] {
+	#HelloWorld {
+    		text: 'Hello, World!'
+	}
+	.myClassName {
+		text: 'Set by class name'
+	}
+}
+[Platform.locale="es"] {
+	#HelloWorld {
+		text: 'Bienvenido, Mundo!'
+	}
+	.myClassName {
+		text: 'Establecido por el nombre de clase'
+	}
+}
+
+</pre>
 
 
 Here are some key features to note--you'll want to use them:
-	1) Include as many .jss files as you need to keep yourself organized.
+	1) Include as many .rjss files as you need to keep yourself organized.
 	2) Have as many rules as you need.
 	3) Have multiple rules for a single element.
 	4) Attributes can use anything in the Ti namespace. I happened to use Platform.locale.
 	5) Attributes can work negatively too -- [Platform.locale!="en"]
 	6) White space doesn't matter; put it where you want it.
-	7) You can localize your app using the [Platform.locale="whatever"] attribute.
-	8) The includeJSS function can take in multiple files or just one; it's up to you.
-	9) #HelloWorld has higher precedence than the Label rule.
-	10) Chain selectors to reduce the amount of JSS you need to write (ie Window, Label { backgroundColor: '#fff' }).
-	11) Chaining attributes (ie [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}).
-	12) Specify multiple class names on your objects, and redux will pick up each class's styles. Just like you can in HTML (ex className: 'big_text red_text').
+	7) You can localize your app using the [Platform.locale="language"] attribute.
+	8) The includeRJSS function can take in multiple files or just one.
+	9) ID rules have higher precedence than className rules, which have higher precedence than element rules.
+	10) Chain selectors to reduce the amount of RJSS you need to write  -- Window, Label { backgroundColor: '#fff' }.
+	11) Attributes can have code blocks so they control multiple rules -- [Platform.osname='iphone'] { #foo {} #bar {} }.
+	12) Chain attributes for more complicated rules -- [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
+	13) Specify multiple class names on your objects -- className: 'big_text red_text'.
+	14) Add comments to your JSS using /\* and \*/. Note that // comments are not supported.
 
 
 CONTACT INFORMATION
