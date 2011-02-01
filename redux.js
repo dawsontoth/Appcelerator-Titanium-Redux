@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v7 by Dawson Toth
+* Appcelerator Redux v8 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
