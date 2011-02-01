@@ -1,5 +1,5 @@
 /* English */
-[Platform.locale="en"] {
+[Ti.Platform.locale="en" || Ti.Platform.locale="en-US"] {
   #Window1 { title: 'Tab One' }
   #Window2 { title: 'Tab Two' }
   #Tab1 { title: 'Tab One' }
@@ -8,7 +8,7 @@
   #Label2 { text: 'I am Window Two' }
 }
 /* Spanish */
-[Platform.locale="es"] {
+[Ti.Platform.locale="es" || Ti.Platform.locale="en-ES"] {
   #Window1 { title: 'Solapa Uno' }
   #Window2 { title: 'Solapa Dos' }
   #Tab1 { title: 'Solapa Uno' }

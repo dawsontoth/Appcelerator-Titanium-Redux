@@ -1,29 +1,27 @@
+// We do this at the top of all of our files to include redux:
 Ti.include('redux.js');
 
-/* Include our RJSS */
+// Include our utilities in every JS context
+includeGlobal('includes/utilities.js');
+
+// Include our RJSS
 includeRJSSGlobal('rjss/common.rjss');
 includeRJSSGlobal('rjss/localize.rjss');
 
-/* Tell the compiler which packages we are going to use */
-Ti.UI.createTabGroup;
-Ti.UI.createWindow;
-Ti.UI.createTab;
-Ti.UI.createLabel;
+// Tell the compiler which modules we are going to use; note there are no () on these!
+var used = [Ti.UI.createTabGroup, Ti.UI.createWindow, Ti.UI.createTab, Ti.UI.createLabel, Ti.Platform.locale];
 
-// this sets the background color of the master UIView (when there are no windows/tab groups on it)
-Titanium.UI.setBackgroundColor('#000');
-
-// create tab group
+// Create tab group
 var tabGroup = new TabGroup();
 
+// Add two tabs
 tabGroup.addTab(new Tab({
     id: 'Tab1',
     window: new Window({
         id: 'Window1',
         url: 'tabs/tab1.js'
     })
-})); 
-
+}));
 tabGroup.addTab(new Tab({
     id: 'Tab2',
     window: new Window({
@@ -32,5 +30,5 @@ tabGroup.addTab(new Tab({
     })
 }));
 
-// open tab group
+// Open the tab group
 tabGroup.open();

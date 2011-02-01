@@ -22,19 +22,51 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
 Titanium.API.error('hi');		
 Titanium.API.warn('hi');		
 Titanium.API.log('hi');			
-Titanium.include('foo.js');</pre>		
+Titanium.include('foo.js');
+Titanium.UI.currentWindow;
+Titanium.UI.currentTab;</pre>
 
 **Redux Code**		
 <pre>info('hi');		
 error('hi');		
 warn('hi');		
 log('hi');		
-include('foo.js');</pre>	
-	
+include('foo.js'); // or...
+inc('foo.js');
+currentWindow(); // or...
+win();
+currentTab(); // or...
+tab();</pre>
+
+Note that currentWindow, win, currentTab, and tab are all functions that return a reference to Ti.UI.currentWindow
+or Ti.UI.currentTab. I did it this way because the current window and tab can change as you open and close windows. By making
+them functions, you always have access to the real "current" window or tab.
+
+
 MORE POWERFUL INCLUDE FUNCTIONS
 ----------------------------------------------
 
-Include files or RJSS globally, across all of your JavaScript contexts, as long as they have redux included.
+Include files in a consistent way, even cross platform. iOS and Android paths are both relative when you use this function:
+
+Let's say we are loading files from "tab1.js" in a subfolder named "tabs":
+
+**Normal Code**
+<pre>
+if (Ti.Platform.osname == 'android') {
+    Ti.include('includes/utilities.js');
+}
+else {
+    Ti.include('../includes/utilities.js');
+}
+</pre>
+
+**Redux Code**
+<pre>
+inc('includes/utilities.js');
+</pre>
+
+Globally include files or RJSS, across all of your JavaScript contexts, as long as they have redux included. Note that you
+should use absolute paths, like on Android!
 
 **Normal Code**
 <pre>
@@ -70,17 +102,46 @@ and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respec
 <pre>var label = new Label();</pre>
 
 **Warning**
-On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use.
-By using redux, it can't tell which to include or exclude. But we can fix this easily by giving it
-blatant hints in our app.js, like this:
+On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use. On Android,
+some modules are excluded if you don't reference them in normal JS (like Ti.Platform.locale). By using redux,
+it can't tell which to include or exclude. But we can fix this easily by giving it blatant hints in our app.js,
+like this:
 
 <pre>
 /* Trick Titanium into including the packages we want */
-Titanium.UI.createLabel;
-Titanium.UI.createWebView;
+var used = [Titanium.UI.createLabel, Titanium.UI.createWebView, Ti.Platform.locale];
 </pre>
 
-Now we can use the short redux constructors without worrying about Titanium accidentally excluding something we are using.
+Now we can use the short redux constructors and locale constant in our RJSS without worrying about Titanium accidentally
+excluding something we are using.
+
+Note that we put them in a "user" array so that JSLint won't complain.
+
+
+USING EASY CONSTRUCTORS AND STYLING ON YOUR OWN OBJECTS AND MODULES
+---------------------
+
+Module support is really easy to add to redux:
+
+**Redux Code**
+<pre>Titanium.Painter = require('ti.paint'); // include the paint module
+redux.fn.addNaturalConstructor(this, Titanium.Painter, 'View', 'Canvas');
+var canvas = new Canvas(); // eq to calling Titanium.Painter.createView(), but with RJSS applied!</pre>
+
+There is full RJSS support for these newly created natural constructors. That means you could put a style like the
+following in your RJSS, and it would get applied to the object we just made:
+
+**Redux RJSS Code**
+<pre>Canvas { backgroundColor: 'red' }</pre>
+
+Styling your own objects with RJSS is very straightforward, if you don't want to add the full easy constructors:
+
+**Redux Code**
+<pre>var args = redux.fn.style('Label', { id: 'Label1' });
+// args is now a plain object with all your RJSS included
+// pass it to a normal label creation call:
+var styledLabel = Ti.UI.createLabel(args);</pre>
+
 
 SELECTING ELEMENTS
 ---------------------
@@ -137,11 +198,10 @@ alert(label.color == 'blue');
 alert(label.font.fontSize == 12);</pre>
 
 
-
 EVENT BINDING
 ----------------------------------------------
 
-Bind events in a more natural way. Note the wrapping $().
+Bind events in a more natural way. Note the wrapping $() and the fluent calls.
 
 **Normal Code**	
 <pre>var button = Titanium.UI.createButton({ title: 'Click Me!' });	
@@ -173,7 +233,7 @@ Note that RJSS can only style elements you create using Redux's method of creati
 and that this isn't actual CSS.
 
 **Normal Code**
-Not Supported until Version 1.5 (even then, some features Redux has won't be supported)
+Not Supported until Version 1.5 (even then, many features Redux has won't be supported)
 
 **Redux Code** for Including RJSS from your app.js (or any .js file)
 <pre>includeRJSS('common.rjss');</pre>
@@ -191,7 +251,7 @@ Label {
 	color: '#333'
 }
 /* add an attribute that will act as a filter */
-[Platform.osname="android"] Label {
+[Ti.Platform.osname="android"] Label {
 	backgroundColor: '#aaf',
 	color: '#666'
 }
@@ -211,7 +271,7 @@ Label {
 	text: 'Set for all three selectors'
 }
 /* attribute with its own block */
-[Platform.locale="en"] {
+[Ti.Platform.locale="en"] {
 	#HelloWorld {
     		text: 'Hello, World!'
 	}
@@ -219,7 +279,7 @@ Label {
 		text: 'Set by class name'
 	}
 }
-[Platform.locale="es"] {
+[Ti.Platform.locale="es"] {
 	#HelloWorld {
 		text: 'Bienvenido, Mundo!'
 	}
@@ -235,15 +295,15 @@ Here are some key features to note--you'll want to use them:
 	1) Include as many .rjss files as you need to keep yourself organized.
 	2) Have as many rules as you need.
 	3) Have multiple rules for a single element.
-	4) Attributes can use anything in the Ti namespace. I happened to use Platform.locale.
-	5) Attributes can work negatively too -- [Platform.locale!="en"]
+	4) Attributes can contain ANY valid Javascript -- [true], [false], [new Date().getDay()=1], as long as you don't use square braces [].
+	5) Attributes can work negatively too -- [Ti.Platform.locale!="en"]
 	6) White space doesn't matter; put it where you want it.
-	7) You can localize your app using the [Platform.locale="language"] attribute.
+	7) You can localize your app using the [Ti.Platform.locale="language"] attribute.
 	8) The includeRJSS function can take in multiple files or just one.
 	9) ID rules have higher precedence than className rules, which have higher precedence than element rules.
 	10) Chain selectors to reduce the amount of RJSS you need to write  -- Window, Label { backgroundColor: '#fff' }.
-	11) Attributes can have code blocks so they control multiple rules -- [Platform.osname='iphone'] { #foo {} #bar {} }.
-	12) Chain attributes for more complicated rules -- [Platform.osname="iphone"][Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
+	11) Attributes can have code blocks so they control multiple rules -- [Ti.Platform.osname='iphone'] { #foo {} #bar {} }.
+	12) Chain attributes for more complicated rules -- [Ti.Platform.osname="iphone"||Ti.Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
 	13) Specify multiple class names on your objects -- className: 'big_text red_text'.
 	14) Add comments to your JSS using /\* and \*/. Note that // comments are not supported.
 
@@ -257,3 +317,8 @@ its clients, and created Redux to ease that process and give back to the communi
 that created Appcelerator.
 
 We can be contacted through our website -- www.tothsolutions.com/Contact
+
+Since making Redux, I was hired by Appcelerator, Inc. I'm now a full time professional
+services engineer with them. Note that this doesn't mean Redux is officially supported.
+If you have issues, PLEASE open an issue on GitHub and I will work on getting it resolved!
+But don't contact Appcelerator with issues, or sue them (or me, please) if you have problems.
