@@ -1,7 +1,7 @@
 Redux has a simple goal:
 To reduce the amount of code you need to write when using Appcelerator Titanium.
 
-To use its features, include the redux.js or redux.min.js file at the top of your app.js and every child window's js:
+To use its features, include the redux.js file at the top of your app.js and every child window's js:
 
 <pre>
 Ti.include('redux.js');
