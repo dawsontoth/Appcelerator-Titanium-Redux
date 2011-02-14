@@ -17,10 +17,10 @@ var redux = function (selector) {
     /**
      * Create shorthand for commonly used functions.
      */
-    context.info = context.info || function(message) { Ti.API.info(message); };
-    context.error = context.error || function(message) { Ti.API.error(message); };
-    context.warn = context.warn || function(message) { Ti.API.warn(message); };
-    context.log = context.log || function(message) { Ti.API.log(message); };
+    context.info = context.info || function(message) { Ti.API.log(message, 'info'); };
+    context.error = context.error || function(message) { Ti.API.log(message, 'error'); };
+    context.warn = context.warn || function(message) { Ti.API.log(message, 'warn'); };
+    context.log = context.log || function(message) { Ti.API.log(message, 'log'); };
     context.include = context.include || function(files) { redux.fn.include(files); };
     context.inc = context.inc || function(files) { redux.fn.include(files); };
     context.currentWindow = context.currentWindow || function() { return Ti.UI.currentWindow; };
