@@ -32,3 +32,5 @@ tabGroup.addTab(new Tab({
 
 // Open the tab group
 tabGroup.open();
+
+info('TAB GROUPS: Finished opening all tab groups!');

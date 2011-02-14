@@ -8,3 +8,5 @@ win().add(label);
 // call something in our utilities; note that we don't have to include the file in this context because
 // it we did a "includeGlobal" in our app.js!
 label.text = formatDate(new Date());
+
+info('Opened tab ' + tab().title);
