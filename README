@@ -102,8 +102,7 @@ and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respec
 <pre>var label = new Label();</pre>
 
 **Warning**
-On iPhone, Titanium optimizes your installation packages based on what Titanium elements you use. On Android,
-some modules are excluded if you don't reference them in normal JS (like Ti.Platform.locale). By using redux,
+Titanium optimizes your installation packages based on what Titanium elements you use. By using redux,
 it can't tell which to include or exclude. But we can fix this easily by giving it blatant hints in our app.js,
 like this:
 
