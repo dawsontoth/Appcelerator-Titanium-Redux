@@ -8,3 +8,6 @@ win().add(label);
 // call something in our utilities; note that we don't have to include the file in this context because
 // it we did a "includeGlobal" in our app.js!
 checkInternet();
+
+info('Opened tab ' + tab().title);
+log('DEBUG', 'Window title is ' + win().title);
