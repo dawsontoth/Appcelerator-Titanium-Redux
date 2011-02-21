@@ -171,6 +171,11 @@ var redux = function (selector) {
                 // grab the path from the current window's url!
                 // split the url into an array around each /
                 var context = (Ti.UI.currentWindow && Ti.UI.currentWindow.url.split('/')) || [''];
+
+                if (context[0] == '') {
+                    context.shift();
+                }
+
                 // pop the file name out of the array; we don't need it
                 context.pop();
                 // change each folder name into a .. (to get back to the root)
