@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v8 by Dawson Toth
+* Appcelerator Redux v8.1 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -84,11 +84,6 @@ var redux = function (selector) {
             'TextArea', 'TextField', 'Toolbar', 'View', 'WebView', 'Window'
             ]
         },
-        maps: {
-            byID: {},
-            byClassName: {},
-            byType: {}
-        },
         defaults: {
             byID: {},
             byClassName: {},
@@ -140,20 +135,7 @@ var redux = function (selector) {
                 this.length = 1;
                 return this;
             }
-            // id
-            if (selector.indexOf('#') === 0) {
-                this.context = [this[0] = redux.data.maps.byID[selector.split('#')[1]]];
-                this.length = this.context != null;
-                return this;
-            }
-            // class name
-            if (selector.indexOf('.') === 0) {
-                this.context = redux.data.maps.byClassName[selector.split('.')[0]];
-                return redux.fn.mergeObjects(this, this.context);
-            }
-            // type
-            this.context = redux.data.maps.byType[selector];
-            return redux.fn.mergeObjects(this, this.context);
+            throw 'Non-object selectors have been turned off in this version of redux for memory reasons.';
         },
         /**
          * Includes one or more files using absolute pathing regardless of the platform (Android and iOS).
@@ -381,31 +363,6 @@ var redux = function (selector) {
             };
         },
         /**
-         * Starts tracking an element with redux. This lets us select the element later by its ID
-         * class or type.
-         * @param {Object} element
-         */
-        trackElement: function (element) {
-            var maps = redux.data.maps;
-            if (element.id) {
-                maps.byID[element.id] = element;
-            }
-            if (element.className) {
-                if (!maps.byClassName[element.className]) {
-                    maps.byClassName[element.className] = [];
-                    maps.byClassName[element.className].push(element);
-                } else if (!redux.fn.contains(element, maps.byClassName[element.className])) {
-                    maps.byClassName[element.className].push(element);
-                }
-            }
-            if (!maps.byType[element.toString()]) {
-                maps.byType[element.toString()] = [];
-                maps.byType[element.toString()].push(element);
-            } else if (!redux.fn.contains(element, maps.byType[element.toString()])) {
-                maps.byType[element.toString()].push(element);
-            }
-        },
-        /**
          * Set the default properties for any elements matched by the RJSS selector.
          * @param {Object} selector
          * @param {Object} defaults
@@ -468,9 +425,7 @@ var redux = function (selector) {
                 }
                 args = redux.fn.style(constructorName, args);
                 // return created object with merged defaults by type
-                var createdElement = parent['create' + type](args);
-                redux.fn.trackElement(createdElement);
-                return createdElement;
+                return parent['create' + type](args);
             };
             /**
              * Shortcut to setting defaults by type. Will only apply to objects you create in the future using redux's constructors.

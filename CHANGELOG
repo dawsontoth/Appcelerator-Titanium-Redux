@@ -1,3 +1,8 @@
+v8.1 04/27/2011
+    BREAKING CHANGE - removed element tracking due to unnecessary object retention (memory leaks) --
+                        if there is still interest in the community, I'll look into fixing this rather
+                        than simply removing it.
+
 v8 02/01/2011
     Redux on Titanium Mobile 1.6.0, both iOS and Android now fully working
     BREAKING CHANGE - rjss attributes no longer get Ti. injected! This means you can do things like || and && in attributes, or use non-Ti functions and variables; see README for more info
