@@ -273,7 +273,7 @@ Label {
 </pre>
 
 
-Here are some key features to note--you'll want to use them:
+Here are some key features of RJSS to note--you'll want to use them:
 	1) Include as many .rjss files as you need to keep yourself organized.
 	2) Have as many rules as you need.
 	3) Have multiple rules for a single element.
@@ -287,7 +287,23 @@ Here are some key features to note--you'll want to use them:
 	11) Attributes can have code blocks so they control multiple rules -- [Ti.Platform.osname='iphone'] { #foo {} #bar {} }.
 	12) Chain attributes for more complicated rules -- [Ti.Platform.osname="iphone"||Ti.Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
 	13) Specify multiple class names on your objects -- className: 'big_text red_text'.
-	14) Add comments to your JSS using /\* and \*/. Note that // comments are not supported.
+	14) Add comments to your RJSS using /\* and \*/. Note that // comments are not supported.
+
+
+
+DYNAMIC STYLING
+----------------------------------------------
+
+You can apply RJSS to elements after they are created. For example, you can use this to toggle a button between two
+classNames when the user touches it.
+
+**Normal Code**
+Not Supported
+
+**Redux Code**
+<pre>var button = new Button({ className: 'Off' });
+$(button).applyStyle('Button', { className: 'On' });</pre>
+
 
 
 CONTACT INFORMATION
@@ -303,4 +319,5 @@ We can be contacted through our website -- www.tothsolutions.com/Contact
 Since making Redux, I was hired by Appcelerator, Inc. I'm now a full time professional
 services engineer with them. Note that this doesn't mean Redux is officially supported.
 If you have issues, PLEASE open an issue on GitHub and I will work on getting it resolved!
-But don't contact Appcelerator with issues, or sue them (or me, please) if you have problems.
+
+Don't contact Appcelerator with issues, or sue them (or me, please) if you have problems.

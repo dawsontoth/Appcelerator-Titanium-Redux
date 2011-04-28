@@ -1,16 +1,31 @@
+v8.2 04/28/2011
+    Added "applyStyle" context sensitive function to allow for dynamic style changes;
+        ex. $(view).applyStyle('View', { className: 'NewClassName' }); see README for more info
+    "inc" and "include" shorthands now accept a variable number of arguments, like Ti.include does.
+    Fixed variable name "i2" resulting in JSLint warning about duplicate variable declarations.
+    Updated the CHANGELOG, wrapping several of the longer lines.
+    Removed README in favor of README.md; duplicated content.
+
 v8.1 04/27/2011
     BREAKING CHANGE - removed element tracking due to unnecessary object retention (memory leaks) --
-                        if there is still interest in the community, I'll look into fixing this rather
-                        than simply removing it.
+        This means $('Label') will no longer select all labels.
+        If this feature has interest in the community, we can look into fixing this rather than simply removing it.
 
 v8 02/01/2011
     Redux on Titanium Mobile 1.6.0, both iOS and Android now fully working
-    BREAKING CHANGE - rjss attributes no longer get Ti. injected! This means you can do things like || and && in attributes, or use non-Ti functions and variables; see README for more info
-    Added redux.fn.style - style objects not created through redux, letting you use RJSS on anything; see README for more info
-    Added redux.fn.addNaturalConstructor - extend redux with your own classes, supporting RJSS styling on them; useful for modules! see README for more info
-    Added redux.fn.include - consistent cross platform! inc('includes/utilities.js') will work from ANY folder on both iOS and Android; see README for more info
-    Added currentWindow and currentTab functions, for accessing Ti.UI.currentWindow and currentTab; see README for more info
-    Added several new shorthands: inc for include, win for currentWindow, and tab for currentTab; see README for more info
+    BREAKING CHANGE - rjss attributes no longer get Ti. injected!
+        This means you can do things like || and && in attributes, or use non-Ti functions and variables;
+        see README for more info
+    Added redux.fn.style - style objects not created through redux, letting you use RJSS on anything;
+        see README for more info
+    Added redux.fn.addNaturalConstructor - extend redux with your own classes, supporting RJSS styling on them;
+        useful for modules! see README for more info
+    Added redux.fn.include - consistent cross platform!
+        ex inc('includes/utilities.js') will work from ANY folder on both iOS and Android; see README for more info
+    Added currentWindow and currentTab functions, for accessing Ti.UI.currentWindow and currentTab;
+        see README for more info
+    Added several new shorthands: inc for include, win for currentWindow, and tab for currentTab;
+        see README for more info
     Fixed issue 11 - includeGlobal uses the new include function that works from any folder, to any folder.
     Fixed issue 12 - Redux shorthands will now politely step aside for existing functions instead of crashing the app
     Fixed issue 13 - RJSS now properly handles arrays, like buttonNames:['yes','no']
@@ -26,7 +41,8 @@ v7 12/02/2010
 	RJSS parsing is now done in a single pass, greatly improving its performance
 
 v6.1
-	Actually implemented issue 5 -- specify multiple class names on your objects like you can in HTML (ex className: 'big_text red_text')
+	Actually implemented issue 5 -- specify multiple class names on your objects like you can in HTML
+	    ex className: 'big_text red_text'
 
 v6 11/20/2010
 	Simplified the "setDefault" functions to be a single function call that takes in a selector
@@ -39,7 +55,8 @@ v6 11/20/2010
 v5 11/18/2010
 	Added two new include functions: includeJSSGlobal and includeGlobal
 	JSS now caches cross context, so the parsing performance hit is reduced
-	Cleaned up the namespacing a bit more; all core functionality is in the redux namespace with shorthands for commonly used functions like includeJSS
+	Cleaned up the namespacing a bit more; all core functionality is in the redux namespace with shorthands for
+	    commonly used functions like includeJSS
 	Tweaked spacing in code for cleaner look
 	Updated JSDoc for several of the functions
 
@@ -55,8 +72,9 @@ v3  11/11/2010
 	Fixed issue 2 -- Class names are now supported in JSS
 	Cleaned up the redux namespace
 	Expanded natural constructor to support anything created by Ti.*.create*, like Ti.Network.createHTTPClient
-	JSS can now set defaults for non UI elements, like HTTPClients (so long as the objects are constructed through redux)
-	Element selection by type, class, and ID now works like jQuery -- $('.myButton') will return an array of objects matching the selector
+	JSS can now set defaults for non UI elements, like HTTPClients (if the objects are constructed through redux)
+	Element selection by type, class, and ID now works like jQuery -- $('.myButton') will return an array of objects
+	    matching the selector
 	JSS now supports comments taking the form /* a comment */
 	Updated the README with the new goodies and updated old ones
 	

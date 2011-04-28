@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v8.1 by Dawson Toth
+* Appcelerator Redux v8.2 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -21,8 +21,8 @@ var redux = function (selector) {
     context.error = context.error || function(message) { Ti.API.error(message); };
     context.warn = context.warn || function(message) { Ti.API.warn(message); };
     context.log = context.log || function(level, message) { Ti.API.log(level, message); };
-    context.include = context.include || function(files) { redux.fn.include(files); };
-    context.inc = context.inc || function(files) { redux.fn.include(files); };
+    context.include = context.include || function() { redux.fn.include.call(arguments); };
+    context.inc = context.inc || function() { redux.fn.include.call(arguments); };
     context.currentWindow = context.currentWindow || function() { return Ti.UI.currentWindow; };
     context.currentTab = context.currentTab || function() { return Ti.UI.currentTab; };
     context.win = context.win || context.currentWindow;
@@ -166,8 +166,8 @@ var redux = function (selector) {
                     relative += '/';
                 }
                 // now iterate over our arguments using this relative path!
-                for (var i2 = 0, l2 = arguments.length; i2 < l2; i2++) {
-                    Ti.include(relative + arguments[i2]);
+                for (var i3 = 0, l3 = arguments.length; i3 < l3; i3++) {
+                    Ti.include(relative + arguments[i3]);
                 }
             }
         },
@@ -409,6 +409,18 @@ var redux = function (selector) {
             return redux.fn.mergeObjects(args, redux.data.defaults.byType[type]);
         },
         /**
+         * Applies the styles from the passed in arguments directly to the passed in object.
+         * @param obj Any object or UI element; does not have to be created by redux.
+         * @param type The type of the object (Label, ImageView, etc)
+         * @param args The construction arguments, such as the id or className
+         */
+        applyStyle: function(obj, type, args) {
+            var styles = redux.fn.style(type, args);
+            for (var key in styles) {
+                obj[key] = styles[key];
+            }
+        },
+        /**
          * Adds a natural constructors for all the different things you can create with Ti, like Labels,
          * LoginButtons, HTTPClients, etc. Also allows you to add your own natural constructors.
          *
@@ -456,6 +468,18 @@ var redux = function (selector) {
             }
         }
     }
+
+    /**
+     * Expose the applyStyle function to selector based redux usages -- $(view).applyStyle() etc.
+     * @param type
+     * @param args
+     */
+    redux.fn.init.prototype.applyStyle = function(type, args) {
+        for (var i = 0, l = this.length; i < l; i++) {
+            redux.fn.applyStyle(this.context[i], type, args);
+        }
+        return this;
+    };
 
     /**
      * Includes a file in every JavaScript context with redux loaded that exists or that will exist.
