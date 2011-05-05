@@ -208,19 +208,18 @@ var redux = function (selector) {
             var canStartSelector = true, canBeAttributeBrace = false;
 
             for (var i = 0, l = rjss.length; i < l; i++) {
-                var next = rjss[i+1], current = rjss[i], last = rjss[i-1];
                 if (inComment) {
-                    if (current == '/' && last == '*') {
+                    if (rjss[i] == '/' && rjss[i - 1] == '*') {
                         inComment = false;
                     }
                     continue;
                 }
-                switch (current) {
+                switch (rjss[i]) {
                     case ' ':
                         result += ' ';
                         break;
                     case '/':
-                        inComment = next == '*';
+                        inComment = rjss[i+1] == '*';
                         result += inComment ? '' : '/';
                         break;
                     case '[':
@@ -232,7 +231,7 @@ var redux = function (selector) {
                         }
                         break;
                     case '=':
-                        result += (last != '!' && last != '<' && last != '>') ? '==' : '=';
+                        result += (rjss[i - 1] != '!' && rjss[i - 1] != '<' && rjss[i - 1] != '>') ? '==' : '=';
                         break;
                     case ']':
                         if (braceDepth > 0) {
@@ -277,7 +276,7 @@ var redux = function (selector) {
                             inSelector = true;
                             result += 'redux.fn.setDefault("';
                         }
-                        result += current;
+                        result += rjss[i];
                         break;
                 }
             }
