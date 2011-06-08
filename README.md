@@ -274,20 +274,21 @@ Label {
 
 
 Here are some key features of RJSS to note--you'll want to use them:
-	1) Include as many .rjss files as you need to keep yourself organized.
-	2) Have as many rules as you need.
-	3) Have multiple rules for a single element.
-	4) Attributes can contain ANY valid Javascript -- [true], [false], [new Date().getDay()=1], as long as you don't use square braces [].
-	5) Attributes can work negatively too -- [Ti.Platform.locale!="en"]
-	6) White space doesn't matter; put it where you want it.
-	7) You can localize your app using the [Ti.Platform.locale="language"] attribute.
-	8) The includeRJSS function can take in multiple files or just one.
-	9) ID rules have higher precedence than className rules, which have higher precedence than element rules.
-	10) Chain selectors to reduce the amount of RJSS you need to write  -- Window, Label { backgroundColor: '#fff' }.
-	11) Attributes can have code blocks so they control multiple rules -- [Ti.Platform.osname='iphone'] { #foo {} #bar {} }.
-	12) Chain attributes for more complicated rules -- [Ti.Platform.osname="iphone"||Ti.Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
-	13) Specify multiple class names on your objects -- className: 'big_text red_text'.
-	14) Add comments to your RJSS using /\* and \*/. Note that // comments are not supported.
+
+- Include as many .rjss files as you need to keep yourself organized.
+- Have as many rules as you need.
+- Have multiple rules for a single element.
+- Attributes can contain ANY valid Javascript -- [true], [false], [new Date().getDay()=1], as long as you don't use square braces [].
+- Attributes can work negatively too -- [Ti.Platform.locale!="en"]
+- White space doesn't matter; put it where you want it.
+- You can localize your app using the [Ti.Platform.locale="language"] attribute.
+- The includeRJSS function can take in multiple files or just one.
+- ID rules have higher precedence than className rules, which have higher precedence than element rules.
+- Chain selectors to reduce the amount of RJSS you need to write  -- Window, Label { backgroundColor: '#fff' }.
+- Attributes can have code blocks so they control multiple rules -- [Ti.Platform.osname='iphone'] { #foo {} #bar {} }.
+- Chain attributes for more complicated rules -- [Ti.Platform.osname="iphone"||Ti.Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
+- Specify multiple class names on your objects -- className: 'big_text red_text'.
+- Add comments to your RJSS using /\* and \*/. Note that // comments are not supported.
 
 
 
