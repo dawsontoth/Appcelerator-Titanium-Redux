@@ -1,3 +1,4 @@
 .project
 test/build/iphone/*
 test/build/android/*
+test/build*
