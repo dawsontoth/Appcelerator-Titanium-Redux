@@ -172,8 +172,8 @@ important than default properties by element type and class names, and will over
 <pre>Not Supported</pre>	
 
 **Redux Code**		
-<pre>$.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
-$.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
+<pre>$.fn.setDefault('#myID', { text: 'Hello, World!', color: 'red' });
+$.fn.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
 var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
 alert(label.text == 'Hello, World!');	
 alert(label.color == 'blue');
@@ -203,7 +203,7 @@ You can add support for custom events.
 <pre>button.addEventListener('myCustomEvent', function() { });</pre>	
 
 **Redux Code**	
-<pre>$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
+<pre>$.fn.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
 $(button).myCustomEvent(function() { });</pre>	
 
 
