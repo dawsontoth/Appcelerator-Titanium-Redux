@@ -276,7 +276,7 @@ var redux = function (selector) {
                         if (braceDepth == 0 && canStartSelector) {
                             canStartSelector = false;
                             inSelector = true;
-                            result += 'redux.fn.setDefault("';
+                            result += '\nredux.fn.setDefault("';
                         }
                         result += rjss[i];
                         break;
@@ -292,7 +292,16 @@ var redux = function (selector) {
          */
         includeRJSS: function () {
             for (var i = 0, l = arguments.length; i < l; i++) {
-                eval(redux.fn.parseRJSS(arguments[i]));
+                var parsedRJSS = redux.fn.parseRJSS(arguments[i]);
+                try {
+                    eval(parsedRJSS);
+                } catch(e) {
+                    var lineNumber = 2;
+                    warn('RJSS "' + arguments[i] + '" has syntax errors.  Review generated code with line numbers => ' +
+                        parsedRJSS.replace(/\n/g, function() { return '\n#' + (lineNumber++) + '. ' ; }));
+                    e.message = 'RJSS Syntax ' + e.message;
+                    throw(e);
+                }
             }
         },
         /**
