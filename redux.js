@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v8.2 by Dawson Toth
+* Appcelerator Redux v8.3 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -145,7 +145,9 @@ var redux = function (selector) {
          */
         include: function() {
             // android doesn't require path juggling
-            if (Ti.Platform.osname == 'android') {
+            var osName = Ti.Platform.osname;
+            var majorVersion = Ti.version.substring(0, 3);
+            if (osName == 'android' || majorVersion >= 1.7) {
                 for (var i2 = 0, l2 = arguments.length; i2 < l2; i2++) {
                     Ti.include(arguments[i2]);
                 }
