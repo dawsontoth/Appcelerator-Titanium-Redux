@@ -350,10 +350,10 @@ var redux = function (selector) {
             }
             for (var index in overrider) {
                 if (overrider.hasOwnProperty(index)) {
-                    if (typeof original[index] == 'undefined') {
-                        original[index] = overrider[index];
-                    } else if (typeof overrider[index] == 'object') {
+                    if (typeof overrider[index] == 'object') {
                         original[index] = mergeObjects(original[index], overrider[index]);
+                    } else {
+                        original[index] = overrider[index];
                     }
                 }
             }
