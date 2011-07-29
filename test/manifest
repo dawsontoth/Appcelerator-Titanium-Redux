@@ -1,8 +1,8 @@
-#appname: Redux Test
-#publisher: dawson
-#url: http://tothsolutions.com/
-#image: appicon.png
-#appid: com.tothsolutions.redux.test
-#desc: undefined
-#type: mobile
-#guid: 2ce77904-6b50-461e-bd0a-cca95c3e50a9
+#appname:Redux Test
+#publisher:Dawson Toth
+#url:http://tothsolutions.com/
+#image:appicon.png
+#appid:com.tothsolutions.redux.test
+#desc:Tests and demonstrates the basic functionality of Redux
+#type:ipad
+#guid:2ce77904-6b50-461e-bd0a-cca95c3e50a9
