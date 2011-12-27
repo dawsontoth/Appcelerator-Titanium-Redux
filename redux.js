@@ -296,17 +296,17 @@ var redux = function (selector) {
                 try {
                     eval(parsedRJSS);
                 } catch(e) {
-					error('RJSS "' + arguments[i] + '" has syntax errors:');
+                    error('RJSS "' + arguments[i] + '" has syntax errors:');
 
-					// Check each line for errors
+                    // Check each line for errors
                     var lines = parsedRJSS.split("\n");
-					for (var ii = 0, ll = lines.length; ii < ll; ii++) {
-						try {
-							eval(lines[ii]);
-						} catch (e) {
-							error(lines[ii]);
-						}
-					}
+                    for (var ii = 0, ll = lines.length; ii < ll; ii++) {
+                        try {
+                            eval(lines[ii]);
+                        } catch (e) {
+                            error(lines[ii]);
+                        }
+                    }
 
                     e.message = 'RJSS Syntax ' + e.message;
                 }
