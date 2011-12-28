@@ -11,7 +11,7 @@ Window, Label {
 
 Label {
   color: '#999',
-  font: { fontSize: 20, fontFamily: 'Helvetica Neue'},
+  font: { fontSize: 20, fontFamily: 'Helvetica Neue', fontStyle: 'italic' },
   textAlign: 'center',
   width: 'auto',
   left: 0,
@@ -28,4 +28,68 @@ Label {
 }
 .big_text {
   font: { fontSize: 48 }
+}
+
+/* ID selector should have precedence over prior by Type selector */
+#buttonsLabel {
+  top: 'auto',
+  bottom: 10,
+  font: {
+    fontSize: 13
+  },
+  height: 'auto',
+  text: 'This should appear at the bottom in yellow italic with a grey gradient background',
+  color: '#FFFFFF',
+  backgroundGradient: {
+    type:'linear',
+    colors:[{color:'#300',position:0.0},{color:'#A00',position:1.0}]
+  },
+  borderWidth: 1,
+  borderColor: '#FFFFFF',
+  borderRadius: 3
+}
+/* backgroundGradient object properties should override properties defined in previous #buttonsLabel selector */
+#buttonsLabel {
+  backgroundGradient: {
+    colors:[{color:'#333',position:0.0},{color:'#AAA',position:1.0}]
+  }
+}
+
+#red_button, #blue_button {
+  bottom: 50,
+  width: 145,
+  color: '#FFFFFF',
+  height: 40,
+  style: Titanium.UI.INPUT_BORDERSTYLE_NONE,
+  borderRadius: 5,
+  borderColor: '#000000',
+  borderWidth: 1,
+  font: {
+    fontSize: 14
+  }
+}
+
+#red_button {
+  left: 10,
+  title: 'Should be red'
+}
+
+/* background color attribute in ID should take precedence over class selector */
+#blue_button {
+  right: 10,
+  backgroundColor: '#000099',
+  title: 'Should be blue'
+}
+
+.red_button {
+  backgroundColor: '#009900'
+}
+
+/* this should take precedence over previous selector as declared after in RJSS*/
+.red_button {
+  backgroundColor: '#990000'
+}
+
+.blue_button {
+  backgroundColor: '#009900'
 }

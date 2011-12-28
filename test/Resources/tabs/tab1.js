@@ -9,4 +9,15 @@ win().add(label);
 // it we did a "includeGlobal" in our app.js!
 label.text = formatDate(new Date());
 
+// ensure styles for RJSS are inherited in order they are defined and conflicts are overridden by last declaration
+//   Explicit Style -> By ID -> By Class -> By Type 
+var redButton = new Button({ id: 'red_button', className: 'red_button' });
+var blueButton = new Button({ id: 'blue_button', className: 'blue_button' });
+win().add(redButton);
+win().add(blueButton);
+
+// $(button1).applyStyle('Button', { className: 'blue_button'});
+var buttonsLabel = new Label({ id: 'buttonsLabel', color: '#FFFF00' });
+win().add(buttonsLabel);
+
 info('Opened tab ' + tab().title);

@@ -344,28 +344,62 @@ var redux = function (selector) {
             }
             return false;
         },
-        /**
-         * Merges the properties of the two objects.
+
+         /**
+         * Creates a clone of an object
          * @param {Object} original
-         * @param {Object} overrider
          */
-        mergeObjects: function mergeObjects(original, overrider) {
-            if (original == null) {
-                return overrider || {};
+        clone: function clone(original) {
+            if (original === null) {
+                return null;
             }
-            if (overrider == null) {
-                return original;
-            }
-            for (var index in overrider) {
-                if (overrider.hasOwnProperty(index)) {
-                    if (typeof overrider[index] == 'object') {
-                        original[index] = mergeObjects(original[index], overrider[index]);
+            var clonedObject = {};
+            for (var index in original) {
+                if (original.hasOwnProperty(index)) {
+                    // if original does not have hasOwnProperty or is an Array then simply copy the whole object
+                    if ( (typeof original[index] === 'object') &&
+                         (original[index].hasOwnProperty) &&
+                         !(original[index] instanceof Array) ) {
+                        clonedObject[index] = clone(original[index]);
                     } else {
-                        original[index] = overrider[index];
+                        clonedObject[index] = original[index];
                     }
                 }
             }
-            return original;
+            return clonedObject;
+        },
+
+        /**
+         * Merges the properties of the two objects.
+         * @param {Object} defaultObj
+         * @param {Object} newObj
+         * @param {Boolean} newObjOverridesDefault (defaults to false, therefore defaultObj is not overriden where attributes exist)
+         */
+        mergeObjects: function mergeObjects(defaultObj, newObj, newObjOverridesDefault) {
+            var combined = {};
+            if (defaultObj === null) {
+                return newObj || {};
+            }
+            if (newObj === null) {
+                return defaultObj;
+            } else {
+                combined = redux.fn.clone(defaultObj);
+            }
+            for (var index in newObj) {
+                if (newObj.hasOwnProperty(index)) {
+                    if (typeof newObj[index] === 'object') {
+                        // Only combine child object if it's a native Javascript object and not an Array
+                        if ( (newObj[index].hasOwnProperty) && !(newObj[index] instanceof Array) ) {
+                          combined[index] = mergeObjects(combined[index], newObj[index], newObjOverridesDefault);
+                        } else if ( (typeof combined[index] === 'undefined') || (newObjOverridesDefault) ) {
+                          combined[index] = newObj[index];
+                        }
+                    } else if ( (typeof combined[index] === 'undefined') || (newObjOverridesDefault) ) {
+                        combined[index] = newObj[index];
+                    }
+                }
+            }
+            return combined;
         },
         /**
          * Adds an event binder that can bind listen events or fire events, similar to how jQuery's events stack works.
@@ -408,7 +442,7 @@ var redux = function (selector) {
                         target = redux.data.defaults.byType;
                         break;
                 }
-                target[cleanSelector] = this.mergeObjects(target[cleanSelector] || {}, defaults);
+                target[cleanSelector] = this.mergeObjects(target[cleanSelector] || {}, defaults, true);
             }
             return this;
         },
