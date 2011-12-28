@@ -296,11 +296,19 @@ var redux = function (selector) {
                 try {
                     eval(parsedRJSS);
                 } catch(e) {
-                    var lineNumber = 2;
-                    warn('RJSS "' + arguments[i] + '" has syntax errors.  Review generated code with line numbers => ' +
-                        parsedRJSS.replace(/\n/g, function() { return '\n#' + (lineNumber++) + '. ' ; }));
+                    error('RJSS "' + arguments[i] + '" has syntax errors:');
+
+                    // Check each line for errors
+                    var lines = parsedRJSS.split("\n");
+                    for (var ii = 0, ll = lines.length; ii < ll; ii++) {
+                        try {
+                            eval(lines[ii]);
+                        } catch (e) {
+                            error(lines[ii]);
+                        }
+                    }
+
                     e.message = 'RJSS Syntax ' + e.message;
-                    throw(e);
                 }
             }
         },
