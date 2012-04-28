@@ -21,8 +21,7 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
 <pre>Titanium.API.info('hi');		
 Titanium.API.error('hi');		
 Titanium.API.warn('hi');		
-Titanium.API.log('hi');			
-Titanium.include('foo.js');
+Titanium.API.log('hi');
 Titanium.UI.currentWindow;
 Titanium.UI.currentTab;</pre>
 
@@ -30,8 +29,7 @@ Titanium.UI.currentTab;</pre>
 <pre>info('hi');		
 error('hi');		
 warn('hi');		
-log('hi');		
-include('foo.js'); // or...
+log('hi');
 inc('foo.js');
 currentWindow(); // or...
 win();
@@ -41,49 +39,6 @@ tab();</pre>
 Note that currentWindow, win, currentTab, and tab are all functions that return a reference to Ti.UI.currentWindow
 or Ti.UI.currentTab. I did it this way because the current window and tab can change as you open and close windows. By making
 them functions, you always have access to the real "current" window or tab.
-
-
-MORE POWERFUL INCLUDE FUNCTIONS
-----------------------------------------------
-
-Include files in a consistent way, even cross platform. iOS and Android paths are both relative when you use this function:
-
-Let's say we are loading files from "tab1.js" in a subfolder named "tabs":
-
-**Normal Code**
-<pre>
-if (Ti.Platform.osname == 'android') {
-    Ti.include('includes/utilities.js');
-}
-else {
-    Ti.include('../includes/utilities.js');
-}
-</pre>
-
-**Redux Code**
-<pre>
-inc('includes/utilities.js');
-</pre>
-
-Globally include files or RJSS, across all of your JavaScript contexts, as long as they have redux included. Note that you
-should use absolute paths, like on Android!
-
-**Normal Code**
-<pre>
-/* In every file */
-Ti.include('a.js', 'b.js', 'c.js');
-</pre>
-
-**Redux Code**
-<pre>
-/* In your app.js */
-Ti.include('redux.js');
-includeGlobal('a.js', 'b.js', 'c.js');
-includeRJSSGlobal('d.rjss');
-
-/* In your other js files */
-Ti.include('redux.js');
-</pre>
 
 
 UI CONSTRUCTION
@@ -172,8 +127,8 @@ important than default properties by element type and class names, and will over
 <pre>Not Supported</pre>	
 
 **Redux Code**		
-<pre>$.fn.setDefault('#myID', { text: 'Hello, World!', color: 'red' });
-$.fn.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
+<pre>$.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
+$.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
 var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
 alert(label.text == 'Hello, World!');	
 alert(label.color == 'blue');
@@ -203,7 +158,7 @@ You can add support for custom events.
 <pre>button.addEventListener('myCustomEvent', function() { });</pre>	
 
 **Redux Code**	
-<pre>$.fn.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
+<pre>$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
 $(button).myCustomEvent(function() { });</pre>	
 
 
@@ -219,9 +174,6 @@ Not Supported until Version 1.5 (even then, many features Redux has won't be sup
 
 **Redux Code** for Including RJSS from your app.js (or any .js file)
 <pre>includeRJSS('common.rjss');</pre>
-
-**Redux Code** for including RJSS across all of your .js files, as long as they have redux included
-<pre>includeRJSSGlobal('common.rjss');</pre>
 
 **Redux Code** for Styling Elements from common.rjss (or any .rjss file)
 <pre>Window {
