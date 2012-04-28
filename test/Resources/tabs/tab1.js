@@ -1,23 +1,27 @@
-// We do this at the top of all of our files to include redux:
-Ti.include('../redux.js');
+function createTab1() {
+    var win = new Window({ id: 'Window1' });
+    var tab = new Tab({ id: 'Tab1', window: win });
+    
+    var label = new Label({ id: 'Label1', className: 'big_text red_text' });
+    label.text = formatDate(new Date());
+    win.add(label);
 
-var label = new Label({ id: 'Label1', className: 'big_text red_text' });
+    // RJSS rules are inherited in the order that are defined, and conflicts are overridden by the last
+    // declaration. Past that, the level of rule defines what is used: Explicit Style -> By ID -> By Class -> By Type 
+    win.add(new Button({ id: 'red_button', className: 'red_button' }));
 
-win().add(label);
+    // Styles can also be applied after an object is created.
+    var button2 = new Button({ id: 'blue_button' });
+    $(button2)
+        .applyStyle('Button', { id: 'blue_button', className: 'blue_button'})
+        .click(function() { alert('Button 2 Clicked!'); });
+    win.add(button2);
 
-// call something in our utilities; note that we don't have to include the file in this context because
-// it we did a "includeGlobal" in our app.js!
-label.text = formatDate(new Date());
+    // And they can be applied to any sort of object!
+    var anything = {};
+    $(anything).applyStyle('Button', { className: 'red_button'});
 
-// ensure styles for RJSS are inherited in order they are defined and conflicts are overridden by last declaration
-//   Explicit Style -> By ID -> By Class -> By Type 
-var redButton = new Button({ id: 'red_button', className: 'red_button' });
-var blueButton = new Button({ id: 'blue_button', className: 'blue_button' });
-win().add(redButton);
-win().add(blueButton);
-
-// $(button1).applyStyle('Button', { className: 'blue_button'});
-var buttonsLabel = new Label({ id: 'buttonsLabel', color: '#FFFF00' });
-win().add(buttonsLabel);
-
-info('Opened tab ' + tab().title);
+    win.add(new Label({ id: 'buttonsLabel', color: '#FFFF00' }));
+    
+    return tab;
+}

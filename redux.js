@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v8.3 by Dawson Toth
+* Appcelerator Redux v9.0.0 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -21,8 +21,6 @@ var redux = function (selector) {
     context.error = context.error || function(message) { Ti.API.error(message); };
     context.warn = context.warn || function(message) { Ti.API.warn(message); };
     context.log = context.log || function(level, message) { Ti.API.log(level, message); };
-    context.include = context.include || function() { redux.fn.include.apply(null, arguments); };
-    context.inc = context.inc || function() { redux.fn.include.apply(null, arguments); };
     context.currentWindow = context.currentWindow || function() { return Ti.UI.currentWindow; };
     context.currentTab = context.currentTab || function() { return Ti.UI.currentTab; };
     context.win = context.win || context.currentWindow;
@@ -52,68 +50,46 @@ var redux = function (selector) {
      */
     redux.data = {
         events: [
-        'beforeload', 'blur', 'change', 'click', 'close', 'complete', 'dblclick', 'delete', 'doubletap',
-        'error', 'focus', 'load', 'move', 'open', 'return', 'scroll', 'scrollEnd', 'selected', 'singletap',
-        'swipe', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'twofingertap'
+            'beforeload', 'blur', 'change', 'click', 'close', 'complete', 'dblclick', 'delete', 'doubletap',
+            'error', 'focus', 'load', 'move', 'open', 'return', 'scroll', 'scrollEnd', 'selected', 'singletap',
+            'swipe', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'twofingertap'
         ],
         types: {
             Contacts: [
-            'Group', 'Person'
+                'Group', 'Person'
             ],
             Facebook: [
-            'LoginButton'
+                'LoginButton'
             ],
             Filesystem: [
-            'File', 'TempDirectory', 'TempFile'
+                'TempDirectory', 'TempFile'
             ],
             Media: [
-            'AudioPlayer', 'AudioRecorder', 'Item', 'MusicPlayer', 'Sound', 'VideoPlayer'
+                'AudioPlayer', 'AudioRecorder', 'Item', 'MusicPlayer', 'Sound', 'VideoPlayer'
             ],
             Network: [
-            'BonjourBrowser', 'BonjourService', 'HTTPClient', 'TCPSocket'
+                'BonjourBrowser', 'BonjourService', 'HTTPClient', 'TCPSocket'
             ],
             Platform: [
-            'UUID'
+                'UUID'
+            ],
+            Stream: [
+                'Stream'
             ],
             UI: [
-            '2DMatrix', '3DMatrix', 'ActivityIndicator', 'AlertDialog', 'Animation', 'Button',
-            'ButtonBar', 'CoverFlowView', 'DashboardItem', 'DashboardView', 'EmailDialog',
-            'ImageView', 'Label', 'OptionDialog', 'Picker', 'PickerColumn', 'PickerRow',
-            'ProgressBar', 'ScrollView', 'ScrollableView', 'SearchBar', 'Slider', 'Switch',
-            'Tab', 'TabGroup', 'TabbedBar', 'TableView', 'TableViewRow', 'TableViewSection',
-            'TextArea', 'TextField', 'Toolbar', 'View', 'WebView', 'Window'
+                '2DMatrix', '3DMatrix', 'ActivityIndicator', 'AlertDialog', 'Animation', 'Button', 'ButtonBar',
+                'CoverFlowView', 'DashboardItem', 'DashboardView', 'EmailDialog', 'ImageView', 'Label', 'MaskedImage',
+                'Notification', 'OptionDialog', 'Picker', 'PickerColumn', 'PickerRow', 'ProgressBar', 'ScrollView',
+                'ScrollableView', 'SearchBar', 'Slider', 'Switch', 'Tab', 'TabGroup', 'TabbedBar', 'TableView',
+                'TableViewRow', 'TableViewSection', 'TextArea', 'TextField', 'Toolbar', 'View', 'WebView', 'Window'
             ]
         },
         defaults: {
             byID: {},
             byClassName: {},
             byType: {}
-        },
-        globalVariables: [
-            'files', 'rjss', 'parsedrjss'
-        ],
-        global: {
-            /* dynamically generated based on variables in Ti.App.redux */
         }
     };
-
-    /**
-     * Set up some global function getters and setters. We'll use these throughout the library.
-     */
-    function curryGlobalGet(prop) {
-        return function () {
-            return (Ti.App['redux-' + prop] && redux.JSON.parse(Ti.App['redux-' + prop])) || null;
-        };
-    }
-    function curryGlobalSet(prop) {
-        return function (value) {
-            Ti.App['redux-' + prop] = redux.JSON.stringify(value);
-        };
-    }
-    for (var i = 0, l = redux.data.globalVariables.length; i < l; i++) {
-        redux.data.global['get' + redux.data.globalVariables[i]] = curryGlobalGet(redux.data.globalVariables[i]);
-        redux.data.global['set' + redux.data.globalVariables[i]] = curryGlobalSet(redux.data.globalVariables[i]);
-    }
 
     /**
      * The core redux functions.
@@ -138,61 +114,6 @@ var redux = function (selector) {
             throw 'Non-object selectors have been turned off in this version of redux for memory reasons.';
         },
         /**
-         * Includes one or more files using absolute pathing regardless of the platform (Android and iOS).
-         *
-         * Use this function like this: include('includes/utilities.js'); and it will ALWAYS be relative to
-         * your root folder!
-         */
-        include: function() {
-            // android doesn't require path juggling
-            var osName = Ti.Platform.osname;
-            var majorVersion = Ti.version.substring(0, 3);
-            if (osName == 'android' || majorVersion >= 1.7) {
-                for (var i2 = 0, l2 = arguments.length; i2 < l2; i2++) {
-                    Ti.include(arguments[i2]);
-                }
-            } else {
-                // grab the path from the current window's url!
-                // split the url into an array around each /
-                var context = (Ti.UI.currentWindow && Ti.UI.currentWindow.url.split('/')) || [''];
-
-                if (context[0] == '') {
-                    context.shift();
-                }
-
-                // pop the file name out of the array; we don't need it
-                context.pop();
-                // change each folder name into a .. (to get back to the root)
-                for (var i = 0, l = context.length; i < l; i++) {
-                    context[i] = '..';
-                }
-                // join it all together with / again
-                var relative = context.join('/');
-                // put a / on the end, if we need it
-                if (relative) {
-                    relative += '/';
-                }
-                // now iterate over our arguments using this relative path!
-                for (var i3 = 0, l3 = arguments.length; i3 < l3; i3++) {
-                    Ti.include(relative + arguments[i3]);
-                }
-            }
-        },
-        /**
-         * Includes one or more files in every JavaScript context that will exist, so long as redux is loaded with it.
-         * @param {Array} arguments One or more files to include globally
-         */
-        includeGlobal: function () {
-            var files = redux.data.global.getfiles() || [];
-            for (var i = 0; i < arguments.length; i++) {
-                if (!redux.fn.contains(arguments[i], files)) {
-                    files.push(arguments[i]);
-                    redux.fn.include(arguments[i]);
-                }
-            }
-            redux.data.global.setfiles(files);
-        },
-        /**
          * Turns a string of RJSS into JavaScript that can be safely evaluated. RJSS is a way to customize JavaScript
          * objects quickly, and is primarily used to style your UI elements.
          *
@@ -200,10 +121,6 @@ var redux = function (selector) {
          * @returns Executable JavaScript
          */
         parseRJSS: function (file) {
-            var parsedrjss = redux.data.global.getparsedrjss() || {};
-            if (parsedrjss[file]) {
-                return parsedrjss[file];
-            }
             var rjss = (Ti.Filesystem.getFile(file).read() + '').replace(/[\r\t\n]/g, ' ');
             var result = '', braceDepth = 0;
             var inComment = false, inSelector = false, inAttributeBrace = false;
@@ -282,8 +199,6 @@ var redux = function (selector) {
                         break;
                 }
             }
-            parsedrjss[file] = result;
-            redux.data.global.setparsedrjss(parsedrjss);
             return result;
         },
         /**
@@ -300,32 +215,17 @@ var redux = function (selector) {
 
                     // Check each line for errors
                     var lines = parsedRJSS.split("\n");
-                    for (var ii = 0, ll = lines.length; ii < ll; ii++) {
+                    for (var i2 = 0, l2 = lines.length; i2 < l2; i2++) {
                         try {
-                            eval(lines[ii]);
+                            eval(lines[i2]);
                         } catch (e) {
-                            error(lines[ii]);
+                            error(lines[i2]);
                         }
                     }
 
                     e.message = 'RJSS Syntax ' + e.message;
                 }
             }
-        },
-        /**
-         * Includes and parses one or more RJSS file in every JavaScript context that will exist, so long as
-         * you include redux in each of them.
-         * @param {Array} arguments One or more RJSS files to include globally
-         */
-        includeRJSSGlobal: function () {
-            var files = redux.data.global.getrjss() || [];
-            for (var i = 0, l = arguments.length; i < l; i++) {
-                if (!redux.fn.contains(arguments[i], files)) {
-                    files.push(arguments[i]);
-                    redux.fn.includeRJSS(arguments[i]);
-                }
-            }
-            redux.data.global.setrjss(files);
         },
         /**
          * Returns true if the element is in the array.
@@ -355,11 +255,13 @@ var redux = function (selector) {
             }
             var clonedObject = {};
             for (var index in original) {
-                if (original.hasOwnProperty(index)) {
+                if (original.hasOwnProperty(index) && original[index] !== undefined) {
                     // if original does not have hasOwnProperty or is an Array then simply copy the whole object
                     if ( (typeof original[index] === 'object') &&
+                         !(original[index] instanceof Array) &&
                          (original[index].hasOwnProperty) &&
-                         !(original[index] instanceof Array) ) {
+                         (!Ti.Android || original[index].toString() == '[object Object]')
+                        ) {
                         clonedObject[index] = clone(original[index]);
                     } else {
                         clonedObject[index] = original[index];
@@ -473,8 +375,8 @@ var redux = function (selector) {
          */
         applyStyle: function(obj, type, args) {
             var styles = redux.fn.style(type, args);
-            for (var key in styles) {
-                obj[key] = styles[key];
+            for (var index in styles) {
+                obj[index] = styles[index];
             }
         },
         /**
@@ -488,13 +390,34 @@ var redux = function (selector) {
          */
         addNaturalConstructor: function (context, parent, type, constructorName) {
             constructorName = constructorName || type;
-            context[constructorName] = function cstor(args) {
-                if (!(this instanceof arguments.callee)) {
-                    return new cstor(args);
-                }
+            context[constructorName] = function (args) {
                 args = redux.fn.style(constructorName, args);
                 // return created object with merged defaults by type
                 return parent['create' + type](args);
+            };
+            /**
+             * Shortcut to setting defaults by type. Will only apply to objects you create in the future using redux's constructors.
+             * @param {Object} args
+             */
+            context[type].setDefault = function (args) {
+                redux.fn.setDefault(type, args);
+            };
+        },
+        /**
+         * Adds a natural constructors for all the different things you can create with Ti, like Labels,
+         * LoginButtons, HTTPClients, etc.
+         *
+         * @param context The context to add this constructor to ("this" would be a good thing to pass in here)
+         * @param namespace The namespace under Ti that the object will be created in (like UI, as in Ti.UI)
+         * @param type The type of the constructor (like Label or Button)
+         * @param constructorName The desired constructor name; defaults to type. Generic styles will use this.
+         */
+        addTitaniumNaturalConstructor: function (context, namespace, type, constructorName) {
+            constructorName = constructorName || type;
+            context[constructorName] = function (args) {
+                args = redux.fn.style(constructorName, args);
+                // return created object with merged defaults by type
+                return Ti[namespace]['create' + type](args);
             };
             /**
              * Shortcut to setting defaults by type. Will only apply to objects you create in the future using redux's constructors.
@@ -509,10 +432,10 @@ var redux = function (selector) {
     /**
      * Add shorthand events.
      */
-    for (var i2 = 0, l2 = redux.data.events.length; i2 < l2; i2++) {
-        redux.fn.addEventBinder(redux.data.events[i2]);
+    for (var i = 0, l = redux.data.events.length; i < l; i++) {
+        redux.fn.addEventBinder(redux.data.events[i]);
     }
-
+    
     /**
      * Add natural constructors and shortcuts to setting defaults by type.
      */
@@ -521,7 +444,7 @@ var redux = function (selector) {
         if (redux.data.types.hasOwnProperty(i3)) {
             for (var j3 = 0, l3 = redux.data.types[i3].length; j3 < l3; j3++) {
                 // iterate over types within parent namespace (Label, LoginButton, HTTPClient, etc)
-                redux.fn.addNaturalConstructor(this, Ti[i3], redux.data.types[i3][j3]);
+                redux.fn.addTitaniumNaturalConstructor(this, i3, redux.data.types[i3][j3]);
             }
         }
     }
@@ -539,33 +462,13 @@ var redux = function (selector) {
     };
 
     /**
-     * Includes a file in every JavaScript context with redux loaded that exists or that will exist.
-     */
-    context.includeGlobal = redux.fn.includeGlobal;
-    /**
      * Includes and parses one or more RJSS files. Styles will be applied to any elements you create after calling this.
      */
     context.includeRJSS = redux.fn.includeRJSS;
-    /**
-     * Includes a RJSS file in every JavaScript context with redux loaded that exists or that will exist.
-     */
-    context.includeRJSSGlobal = redux.fn.includeRJSSGlobal;
-
-    /**
-     * Include any normal files or RJSS files from before this context existed.
-     */
-    var files = redux.data.global.getfiles() || [];
-    for (var i5 = 0, l5 = files.length; i5 < l5; i5++) {
-        redux.fn.include(files[i5]);
-    }
-    var rjssFiles = redux.data.global.getrjss() || [];
-    for (var i4 = 0, l4 = rjssFiles.length; i4 < l4; i4++) {
-        redux.fn.includeRJSS(rjssFiles[i4]);
-    }
 
     /**
      * Create a shorthand for redux itself -- $, if it is available.
      */
-    context.$ = context.$ || redux;
+    context['$'] = context['$'] || redux;
 
 })(redux, this);
