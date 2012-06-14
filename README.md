@@ -3,9 +3,7 @@ To reduce the amount of code you need to write when using Appcelerator Titanium.
 
 To use its features, include the redux.js file at the top of your app.js and every child window's js:
 
-<pre>
-Ti.include('redux.js');
-</pre>
+    Ti.include('redux.js');
 
 
 FEATURES
@@ -17,24 +15,26 @@ SHORTHAND FOR COMMON FUNCTIONS
 
 Some functions you use all the time. Redux makes them shorter, and easier to type.
 
-**Normal Code**					
-<pre>Titanium.API.info('hi');		
-Titanium.API.error('hi');		
-Titanium.API.warn('hi');		
-Titanium.API.log('hi');
-Titanium.UI.currentWindow;
-Titanium.UI.currentTab;</pre>
+**Normal Code**	
 
-**Redux Code**		
-<pre>info('hi');		
-error('hi');		
-warn('hi');		
-log('hi');
-inc('foo.js');
-currentWindow(); // or...
-win();
-currentTab(); // or...
-tab();</pre>
+    Titanium.API.info('hi');		
+    Titanium.API.error('hi');		
+    Titanium.API.warn('hi');		
+    Titanium.API.log('hi');
+    Titanium.UI.currentWindow;
+    Titanium.UI.currentTab;
+
+**Redux Code**	
+
+    info('hi');		
+    error('hi');		
+    warn('hi');		
+    log('hi');
+    inc('foo.js');
+    currentWindow(); // or...
+    win();
+    currentTab(); // or...
+    tab();
 
 Note that currentWindow, win, currentTab, and tab are all functions that return a reference to Ti.UI.currentWindow
 or Ti.UI.currentTab. I did it this way because the current window and tab can change as you open and close windows. By making
@@ -50,21 +50,21 @@ Redux features like JSS, default properties, and more. You can use this syntax f
 element normally created using the syntax Ti.\*.create\*. For example, Ti.Network.createHTTPClient()
 and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respectively.
 
-**Normal Code**		
-<pre>var label = Titanium.UI.createLabel();</pre>
+**Normal Code**	
 
-**Redux Code**		
-<pre>var label = new Label();</pre>
+    var label = Titanium.UI.createLabel();
+
+**Redux Code**	
+
+    var label = new Label();
 
 **Warning**
 Titanium optimizes your installation packages based on what Titanium elements you use. By using redux,
 it can't tell which to include or exclude. But we can fix this easily by giving it blatant hints in our app.js,
 like this:
 
-<pre>
-/* Trick Titanium into including the packages we want */
-var used = [Titanium.UI.createLabel, Titanium.UI.createWebView, Ti.Platform.locale];
-</pre>
+    /* Trick Titanium into including the packages we want */
+    var used = [Titanium.UI.createLabel, Titanium.UI.createWebView, Ti.Platform.locale];
 
 Now we can use the short redux constructors and locale constant in our RJSS without worrying about Titanium accidentally
 excluding something we are using.
@@ -78,23 +78,26 @@ USING EASY CONSTRUCTORS AND STYLING ON YOUR OWN OBJECTS AND MODULES
 Module support is really easy to add to redux:
 
 **Redux Code**
-<pre>Titanium.Painter = require('ti.paint'); // include the paint module
-redux.fn.addNaturalConstructor(this, Titanium.Painter, 'View', 'Canvas');
-var canvas = new Canvas(); // eq to calling Titanium.Painter.createView(), but with RJSS applied!</pre>
+
+    var Paint = require('ti.paint'); // include the paint module
+    redux.fn.addNaturalConstructor(this, Paint, 'View', 'PaintView');
+    var paintView = new PaintView(); // eq to calling Paint.createView(), but with RJSS applied!
 
 There is full RJSS support for these newly created natural constructors. That means you could put a style like the
 following in your RJSS, and it would get applied to the object we just made:
 
 **Redux RJSS Code**
-<pre>Canvas { backgroundColor: 'red' }</pre>
+
+    Canvas { backgroundColor: 'red' }
 
 Styling your own objects with RJSS is very straightforward, if you don't want to add the full easy constructors:
 
 **Redux Code**
-<pre>var args = redux.fn.style('Label', { id: 'Label1' });
-// args is now a plain object with all your RJSS included
-// pass it to a normal label creation call:
-var styledLabel = Ti.UI.createLabel(args);</pre>
+
+    var args = redux.fn.style('Label', { id: 'Label1' });
+    // args is now a plain object with all your RJSS included
+    // pass it to a normal label creation call:
+    var styledLabel = Ti.UI.createLabel(args);
 
 
 UI PROPERTY DEFAULTS BY ELEMENT TYPE
@@ -107,13 +110,14 @@ your business logic. Note that property defaults by element type are considered 
 important than property defaults by ID or properties passed in to the constructor, and can be
 overridden by either of these.
 
-**Normal Code**		
-<pre>Not Supported</pre>		
+**Normal Code**
+Not Supported
 
-**Redux Code**		
-<pre>Label.setDefault({ font: {fontWeight: 'bold' } });		
-var label = new Label();		
-alert(label.font.fontWeight == 'bold');</pre>		
+**Redux Code**	
+
+    Label.setDefault({ font: {fontWeight: 'bold' } });		
+    var label = new Label();		
+    alert(label.font.fontWeight == 'bold');		
 
 
 UI PROPERTY DEFAULTS BY SELECTOR
@@ -124,15 +128,16 @@ for your UI elements by their IDs or class names. Note that property defaults by
 important than default properties by element type and class names, and will override them.
 
 **Normal Code**	
-<pre>Not Supported</pre>	
+Not Supported
 
-**Redux Code**		
-<pre>$.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
-$.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
-var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
-alert(label.text == 'Hello, World!');	
-alert(label.color == 'blue');
-alert(label.font.fontSize == 12);</pre>
+**Redux Code**	
+
+    $.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
+    $.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
+    var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
+    alert(label.text == 'Hello, World!');	
+    alert(label.color == 'blue');
+    alert(label.font.fontSize == 12);
 
 
 EVENT BINDING
@@ -141,25 +146,29 @@ EVENT BINDING
 Bind events in a more natural way. Note the wrapping $() and the fluent calls.
 
 **Normal Code**	
-<pre>var button = Titanium.UI.createButton({ title: 'Click Me!' });	
-button.addEventListener('click', function() { alert('clicked!'); });	
-button.fireEvent('click');	
-button.fireEvent('click', {src: 'me'});</pre>	
+
+    var button = Titanium.UI.createButton({ title: 'Click Me!' });	
+    button.addEventListener('click', function() { alert('clicked!'); });	
+    button.fireEvent('click');	
+    button.fireEvent('click', {src: 'me'});	
 
 **Redux Code**	
-<pre>var button = new Button({ title: 'Click Me!' });	
-$(button).click(function() { alert('clicked!'); })
+
+    var button = new Button({ title: 'Click Me!' });	
+    $(button).click(function() { alert('clicked!'); })
          .click()
-         .click({src: 'me'});</pre>	
+         .click({src: 'me'});
 
 
 You can add support for custom events.	
 **Normal Code**	
-<pre>button.addEventListener('myCustomEvent', function() { });</pre>	
+
+    button.addEventListener('myCustomEvent', function() { });	
 
 **Redux Code**	
-<pre>$.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
-$(button).myCustomEvent(function() { });</pre>	
+
+    $.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
+    $(button).myCustomEvent(function() { });	
 
 
 RJSS
@@ -173,56 +182,56 @@ and that this isn't actual CSS.
 Not Supported until Version 1.5 (even then, many features Redux has won't be supported)
 
 **Redux Code** for Including RJSS from your app.js (or any .js file)
-<pre>includeRJSS('common.rjss');</pre>
+
+    includeRJSS('common.rjss');
 
 **Redux Code** for Styling Elements from common.rjss (or any .rjss file)
-<pre>Window {
-	backgroundColor: '#fff'
-}
-/* add comments! use familiar c style comment blocks like this one */
-Label {
-	backgroundColor: '#faa',
-	color: '#333'
-}
-/* add an attribute that will act as a filter */
-[Ti.Platform.osname="android"] Label {
-	backgroundColor: '#aaf',
-	color: '#666'
-}
-/* select by id */
-#HelloWorld {
-	left: 15,
-	right: 15,
-	height: 70,
-	top: 50
-}
-/* by className */
-.myClassName {
-	text: 'Set by class name'
-}
-/* by multiple selectors */
-.selector1, #selector2, Label {
-	text: 'Set for all three selectors'
-}
-/* attribute with its own block */
-[Ti.Platform.locale="en"] {
-	#HelloWorld {
-    		text: 'Hello, World!'
-	}
-	.myClassName {
-		text: 'Set by class name'
-	}
-}
-[Ti.Platform.locale="es"] {
-	#HelloWorld {
-		text: 'Bienvenido, Mundo!'
-	}
-	.myClassName {
-		text: 'Establecido por el nombre de clase'
-	}
-}
 
-</pre>
+    Window {
+    	backgroundColor: '#fff'
+    }
+    /* add comments! use familiar c style comment blocks like this one */
+    Label {
+    	backgroundColor: '#faa',
+    	color: '#333'
+    }
+    /* add an attribute that will act as a filter */
+    [Ti.Platform.osname="android"] Label {
+    	backgroundColor: '#aaf',
+    	color: '#666'
+    }
+    /* select by id */
+    #HelloWorld {
+    	left: 15,
+    	right: 15,
+    	height: 70,
+    	top: 50
+    }
+    /* by className */
+    .myClassName {
+    	text: 'Set by class name'
+    }
+    /* by multiple selectors */
+    .selector1, #selector2, Label {
+    	text: 'Set for all three selectors'
+    }
+    /* attribute with its own block */
+    [Ti.Platform.locale="en"] {
+    	#HelloWorld {
+        		text: 'Hello, World!'
+    	}
+    	.myClassName {
+    		text: 'Set by class name'
+    	}
+    }
+    [Ti.Platform.locale="es"] {
+    	#HelloWorld {
+    		text: 'Bienvenido, Mundo!'
+    	}
+    	.myClassName {
+    		text: 'Establecido por el nombre de clase'
+    	}
+    }
 
 
 Here are some key features of RJSS to note--you'll want to use them:
@@ -253,9 +262,9 @@ For example, look at the "test" app included in this repository.
 
 Now edit your tiapp.xml, inserting this "plugins" element:
 
-<pre><plugins>
-	<plugin version="1.0">redux</plugin>
-</plugins></pre>
+    <plugins>
+        <plugin version="1.0">redux</plugin>
+    </plugins>
 
 
 DYNAMIC STYLING
@@ -268,8 +277,9 @@ classNames when the user touches it.
 Not Supported
 
 **Redux Code**
-<pre>var button = new Button({ className: 'Off' });
-$(button).applyStyle('Button', { className: 'On' });</pre>
+
+    var button = new Button({ className: 'Off' });
+    $(button).applyStyle('Button', { className: 'On' });
 
 
 
