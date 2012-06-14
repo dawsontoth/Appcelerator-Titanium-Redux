@@ -1,5 +1,5 @@
 /*!
-* Appcelerator Redux v9.0.0 by Dawson Toth
+* Appcelerator Redux v9.1.0 by Dawson Toth
 * http://tothsolutions.com/
 *
 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
@@ -121,6 +121,12 @@ var redux = function (selector) {
          * @returns Executable JavaScript
          */
         parseRJSS: function (file) {
+            // Check if the plugin has done our work.
+            var compiled = Ti.Filesystem.getFile(file + '.compiled.js');
+            if (compiled.exists()) {
+                return compiled.read() + '';
+            }
+            
             var rjss = (Ti.Filesystem.getFile(file).read() + '').replace(/[\r\t\n]/g, ' ');
             var result = '', braceDepth = 0;
             var inComment = false, inSelector = false, inAttributeBrace = false;

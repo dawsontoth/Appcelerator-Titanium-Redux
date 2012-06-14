@@ -1,3 +1,14 @@
+v9.1.0 06/14/2012
+	Compiled RJSS via Python compile plugin for iOS and Android (gracefully falls back to runtime compilation)
+
+v9.0.0 04/27/2012
+	Single Context, Deferred Module Loading
+		Ripped out "global" and "include" concepts.
+		OSGI versioning (9.0.0)
+		Deferred Titanium module loading by adding addTitaniumNaturalConstructor.
+		On Android, only clone objects. This avoids a bad situation where we pass in a proxy, like a Window or an array of Table View Rows, and clone some of their properties, but don't end up with the proxy we started with.
+		Use the new Ti.UI.SIZE property.
+
 v8.3 07/26/2011
     Fixed issue 21 - as of Titanium Mobile 1.7.x, the pathing approach introduced in Redux v8 is no longer necessary.
         It will still be used on older versions of Titanium Mobile.

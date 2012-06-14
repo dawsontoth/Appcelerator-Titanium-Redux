@@ -243,6 +243,20 @@ Here are some key features of RJSS to note--you'll want to use them:
 - Add comments to your RJSS using /\* and \*/. Note that // comments are not supported.
 
 
+RJSS COMPILATION
+----------------------------------------------
+
+To compile RJSS with your app, you must update your tiapp.xml and copy the "plugins/redux/plugin.py" folder from this
+repository in to your app's directory.
+
+For example, look at the "test" app included in this repository.
+
+Now edit your tiapp.xml, inserting this "plugins" element:
+
+<pre><plugins>
+	<plugin version="1.0">redux</plugin>
+</plugins></pre>
+
 
 DYNAMIC STYLING
 ----------------------------------------------
