@@ -3,3 +3,4 @@ test/.settings/*
 test/build/iphone/*
 test/build/android/*
 test/build*
+.DS_Store
