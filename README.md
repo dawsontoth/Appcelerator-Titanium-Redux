@@ -37,7 +37,7 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
     tab();
 
 Note that currentWindow, win, currentTab, and tab are all functions that return a reference to Ti.UI.currentWindow
-or Ti.UI.currentTab. I did it this way because the current window and tab can change as you open and close windows. By making
+or Ti.UI.currentTab. This is necessary because the current window and tab can change as you open and close windows. By making
 them functions, you always have access to the real "current" window or tab.
 
 
@@ -48,7 +48,7 @@ Create new Ti elements using the new Constructor() syntax you're used to in Java
 Note that by making your elements this way, you also get to take advantage of other
 Redux features like JSS, default properties, and more. You can use this syntax for any
 element normally created using the syntax Ti.\*.create\*. For example, Ti.Network.createHTTPClient()
-and Ti.UI.createLabel() could instead by new HTTPClient() or new Label(), respectively.
+or Ti.UI.createLabel() could instead be new HTTPClient() or new Label(), respectively.
 
 **Normal Code**	
 
@@ -69,7 +69,7 @@ like this:
 Now we can use the short redux constructors and locale constant in our RJSS without worrying about Titanium accidentally
 excluding something we are using.
 
-Note that we put them in a "user" array so that JSLint won't complain.
+Note that we put them in a "used" array so that JSLint won't complain.
 
 
 USING EASY CONSTRUCTORS AND STYLING ON YOUR OWN OBJECTS AND MODULES
@@ -293,8 +293,8 @@ that created Appcelerator.
 
 We can be contacted through our website -- www.tothsolutions.com/Contact
 
-Since making Redux, I was hired by Appcelerator, Inc. I'm now a full time professional
-services engineer with them. Note that this doesn't mean Redux is officially supported.
-If you have issues, PLEASE open an issue on GitHub and I will work on getting it resolved!
+Since making Redux, I was hired by Appcelerator, Inc. I'm now a full time engineer 
+with them. Note that this doesn't mean Redux is officially supported. If you have 
+issues, PLEASE work to figure it out on your own, and then submit a PR!
 
 Don't contact Appcelerator with issues, or sue them (or me, please) if you have problems.
