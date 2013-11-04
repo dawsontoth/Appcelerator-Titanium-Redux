@@ -77,6 +77,16 @@ describe('rjss', function () {
 
         clicked.should.equal(2);
     });
+    
+    it('should support adding multiple children', function() {
+        var window = new this.Window(),
+            label1 = new this.Label(),
+            label2 = new this.Label();
+        this.R(window).add(label1, label2);
+        window.should.have.property('children').with.lengthOf(2);
+        window.children[0].should.equal(label1);
+        window.children[1].should.equal(label2);
+    });
 
     it('should support styling', function () {
         var params = {

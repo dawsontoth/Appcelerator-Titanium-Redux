@@ -453,6 +453,18 @@ function inject(context) {
     };
 
     /**
+     * Adds multiple children to the selector. -- $(view).add(child1, child2, child3, etc)
+     * @param args
+     */
+    redux.fn.init.prototype.add = function (args) {
+        for (var j = 0; j < arguments.length; j++) {
+            for (var i = 0, l = this.length; i < l; i++) {
+                this.context[i].add(arguments[j]);
+            }
+        }
+    };
+
+    /**
      * Includes and parses one or more RJSS files. Styles will be applied to any elements you create after calling this.
      */
     context.includeRJSS = redux.fn.includeRJSS;
