@@ -271,6 +271,7 @@ function inject(context) {
                     // if original does not have hasOwnProperty or is an Array then simply copy the whole object
                     if ( (typeof original[index] === 'object') &&
                          !(original[index] instanceof Array) &&
+                         (original[index] !== null) &&
                          (original[index].hasOwnProperty) &&
                          (!Ti.Android || original[index].toString() == '[object Object]')
                         ) {

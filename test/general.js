@@ -107,6 +107,12 @@ describe('redux', function () {
         window.should.have.property('backgroundColor', params.backgroundColor);
     });
 
+    it('should be able to clone with a null property', function () {
+        var expected = { nullValue: null },
+            actual = redux.fn.clone(expected);
+        actual.should.eql(expected);
+    });
+
     /*
      Utility.
      */
