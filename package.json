@@ -1,0 +1,32 @@
+{
+	"name": "redux",
+	"version": "9.1.1",
+	"description": "Reduces the amount of code you need to write when using Appcelerator Titanium. Adds support for JSS, localization, default properties, and more.",
+	"main": "redux.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "mocha --recursive --reporter list ./test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dawsontoth/Appcelerator-Titanium-Redux.git"
+	},
+	"keywords": [
+		"appcelerator",
+		"titanium"
+	],
+	"author": "Dawson Toth",
+	"license": "BSD-2-Clause",
+	"bugs": {
+		"url": "https://github.com/dawsontoth/Appcelerator-Titanium-Redux/issues"
+	},
+	"dependencies": {
+	},
+	"devDependencies": {
+		"mocha": "1.14.0",
+		"should": "2.0.2",
+		"mockti": "1.1.1"
+	}
+}

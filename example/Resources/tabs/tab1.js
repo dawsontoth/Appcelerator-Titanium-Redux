@@ -1,4 +1,4 @@
-function createTab1() {
+exports.create = function () {
     var win = new Window({ id: 'Window1' });
     var tab = new Tab({ id: 'Tab1', window: win });
     
@@ -24,4 +24,4 @@ function createTab1() {
     win.add(new Label({ id: 'buttonsLabel', color: '#FFFF00' }));
     
     return tab;
-}
+};

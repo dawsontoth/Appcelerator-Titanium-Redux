@@ -1,9 +1,9 @@
 Redux has a simple goal:
 To reduce the amount of code you need to write when using Appcelerator Titanium.
 
-To use its features, include the redux.js file at the top of your app.js and every child window's js:
+To use its features, include the redux.js file at the top of your app.js or Alloy.js:
 
-    Ti.include('redux.js');
+    require('redux');
 
 
 FEATURES
@@ -30,7 +30,6 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
     error('hi');		
     warn('hi');		
     log('hi');
-    inc('foo.js');
     currentWindow(); // or...
     win();
     currentTab(); // or...
@@ -179,7 +178,7 @@ Note that RJSS can only style elements you create using Redux's method of creati
 and that this isn't actual CSS.
 
 **Normal Code**
-Not Supported until Version 1.5 (even then, many features Redux has won't be supported)
+Not Supported until Version 1.5
 
 **Redux Code** for Including RJSS from your app.js (or any .js file)
 

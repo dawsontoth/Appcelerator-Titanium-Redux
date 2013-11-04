@@ -1,4 +1,4 @@
-function createTab2() {
+exports.create = function () {
     var win = new Window({ id: 'Window2' });
     var tab = new Tab({ id: 'Tab2', window: win });
 
@@ -7,4 +7,4 @@ function createTab2() {
     checkInternet();
 
     return tab;
-}
+};
