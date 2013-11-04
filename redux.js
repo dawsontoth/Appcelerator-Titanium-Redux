@@ -12,7 +12,7 @@ var redux = function (selector) {
     return new redux.fn.init(selector);
 };
 
-inject(exports);
+inject(module.exports = redux);
 
 function inject(context) {
     !this.Titanium && context.Titanium && (Titanium = context.Titanium);
@@ -98,21 +98,16 @@ function inject(context) {
             }
             throw 'Non-object selectors have been turned off in this version of redux for memory reasons.';
         },
+
         /**
          * Turns a string of RJSS into JavaScript that can be safely evaluated. RJSS is a way to customize JavaScript
          * objects quickly, and is primarily used to style your UI elements.
          *
-         * @param {String} file The raw RJSS contents to parse into executable JavaScript
-         * @returns Executable JavaScript
+         * @param {String} rjss The raw RJSS contents to parse into executable JavaScript
+         * @returns {String} Executable JavaScript
          */
-        parseRJSS: function (file) {
-            // Check if the plugin has done our work.
-            var compiled = Ti.Filesystem.getFile(file + '.compiled.js');
-            if (compiled.exists()) {
-                return compiled.read() + '';
-            }
-            
-            var rjss = (Ti.Filesystem.getFile(file).read() + '').replace(/[\r\t\n]/g, ' ');
+        parseRJSS: function(rjss) {
+            rjss = rjss.replace(/[\r\t\n]/g, ' ');
             var result = '', braceDepth = 0;
             var inComment = false, inSelector = false, inAttributeBrace = false;
             var canStartSelector = true, canBeAttributeBrace = false;
@@ -192,13 +187,18 @@ function inject(context) {
             }
             return result;
         },
+        
         /**
          * Includes and parses one or more RJSS files. Styles will be applied to any elements you create after calling this.
          * @param {Array} arguments One or more RJSS files to include and parse
          */
         includeRJSS: function () {
             for (var i = 0, l = arguments.length; i < l; i++) {
-                var parsedRJSS = redux.fn.parseRJSS(arguments[i]);
+                // Check if the plugin has done our work.
+                var compiled = Ti.Filesystem.getFile(arguments[i] + '.compiled'),
+                    parsedRJSS = compiled.exists()
+                        ? compiled.read() + ''
+                        : redux.fn.parseRJSS(Ti.Filesystem.getFile(arguments[i]).read() + '');
                 try {
                     eval(parsedRJSS);
                 } catch(e) {

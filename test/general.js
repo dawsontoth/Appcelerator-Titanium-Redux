@@ -5,12 +5,15 @@ var should = require('should'),
     mockti = require('mockti');
 
 describe('rjss', function () {
+    var redux;
+    
     before(function () {
         this.Titanium = this.Ti = mockti();
     });
 
     it('should require', function () {
-        require('../redux').inject(this);
+        redux = require('../redux');
+        redux.inject(this);
     });
 
     it('should inject shorthands', function () {
@@ -55,7 +58,7 @@ describe('rjss', function () {
                 }
             };
         should.not.exist(this.PaintView);
-        this.R.fn.addNaturalConstructor(this, Paint, 'View', 'PaintView');
+        redux.fn.addNaturalConstructor(this, Paint, 'View', 'PaintView');
         should.exist(this.PaintView);
 
         var paintView = new this.PaintView(params);
@@ -79,9 +82,9 @@ describe('rjss', function () {
         var params = {
             backgroundColor: '#fff'
         };
-        this.R.fn.parseRJSS('Window ' + JSON.stringify(params));
+        eval(redux.fn.parseRJSS('Window ' + JSON.stringify(params)));
         Ti.UI.addEventListener('function::createWindow', curryAssertFirstParameter(params));
-        var window = new this.Window(params);
+        var window = new this.Window();
         window.should.have.property('backgroundColor', params.backgroundColor);
     });
 

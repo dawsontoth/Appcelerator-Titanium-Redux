@@ -5,13 +5,16 @@
 import os, re
 
 def compile(config):
-	print "[INFO] Compiler plugin loaded and working for %s" % config
+	print "[INFO] Redux :: Plugin Loaded :: ", config
 	if 'app_dir' in config:
 		findRJSS(config['app_dir'])
 	else:
 		findRJSS(os.path.join(config['project_dir'], "Resources"))
 
 def findRJSS(currentDirectory):
+	if os.path.exists(currentDirectory) == False:
+		print "[INFO] Redux :: Directory Not Found, Skipping :: ", currentDirectory
+		return
 	for i in os.listdir(currentDirectory):
 		path = os.path.join(currentDirectory, i)
 		if os.path.isfile(path):
@@ -105,5 +108,5 @@ def compileRJSS(path):
 		else:
 			default()
 	
-	print "Redux :: Successfully Compiled RJSS ::  %s.compiled.js" % path
-	open("%s.compiled.js" % path, 'w').write(compileRJSS.result)
+	print "[INFO] Redux :: Successfully Compiled RJSS ::  %s.compiled" % path
+	open("%s.compiled" % path, 'w').write(compileRJSS.result)

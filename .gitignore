@@ -2,3 +2,6 @@ api.jsca
 .DS_Store
 node_modules
 .idea
+*.compiled
+*.log
+plugin.pyc

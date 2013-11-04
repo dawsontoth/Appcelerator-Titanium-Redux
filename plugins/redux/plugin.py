@@ -108,5 +108,5 @@ def compileRJSS(path):
 		else:
 			default()
 	
-	print "[INFO] Redux :: Successfully Compiled RJSS ::  %s.compiled.js" % path
-	open("%s.compiled.js" % path, 'w').write(compileRJSS.result)
+	print "[INFO] Redux :: Successfully Compiled RJSS ::  %s.compiled" % path
+	open("%s.compiled" % path, 'w').write(compileRJSS.result)
