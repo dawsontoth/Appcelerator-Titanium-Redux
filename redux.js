@@ -109,8 +109,8 @@ function inject(context) {
         parseRJSS: function(rjss) {
             rjss = rjss.replace(/[\r\t\n]/g, ' ');
             var result = '', braceDepth = 0;
-            var inComment = false, inSelector = false, inAttributeBrace = false;
-            var canStartSelector = true, canBeAttributeBrace = false;
+            var inComment = false, inSelector = false, inAttributeBrace = false, inVariable = false;
+            var canStartSelector = true, canBeAttributeBrace;
 
             for (var i = 0, l = rjss.length; i < l; i++) {
                 if (inComment) {
@@ -120,11 +120,27 @@ function inject(context) {
                     continue;
                 }
                 switch (rjss[i]) {
+                    case '$':
+                        if (braceDepth == 0 && canStartSelector) {
+                            canStartSelector = false;
+                            inVariable = true;
+                            result += 'var $';
+                        } else {
+                            result += '$';
+                        }
+                        break;
+                    case ';':
+                        if (inVariable) {
+                            canStartSelector = true;
+                            inVariable = false;
+                        }
+                        result += ';';
+                        break;
                     case ' ':
                         result += ' ';
                         break;
                     case '/':
-                        inComment = rjss[i+1] == '*';
+                        inComment = rjss[i + 1] == '*';
                         result += inComment ? '' : '/';
                         break;
                     case '[':
@@ -136,7 +152,12 @@ function inject(context) {
                         }
                         break;
                     case '=':
-                        result += (rjss[i - 1] != '!' && rjss[i - 1] != '<' && rjss[i - 1] != '>') ? '==' : '=';
+                        if (!inVariable) {
+                            result += (rjss[i - 1] != '!' && rjss[i - 1] != '<' && rjss[i - 1] != '>') ? '==' : '=';
+                        }
+                        else {
+                            result += '=';
+                        }
                         break;
                     case ']':
                         if (braceDepth > 0) {

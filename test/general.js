@@ -4,7 +4,7 @@
 var should = require('should'),
     mockti = require('mockti');
 
-describe('rjss', function () {
+describe('redux', function () {
     var redux;
     
     before(function () {
@@ -88,11 +88,20 @@ describe('rjss', function () {
         window.children[1].should.equal(label2);
     });
 
-    it('should support styling', function () {
+    it('rjss should support styling', function () {
         var params = {
             backgroundColor: '#fff'
         };
         eval(redux.fn.parseRJSS('Window ' + JSON.stringify(params)));
+        Ti.UI.addEventListener('function::createWindow', curryAssertFirstParameter(params));
+        var window = new this.Window();
+        window.should.have.property('backgroundColor', params.backgroundColor);
+    });
+
+    it('rjss should support variables', function () {
+        var params = { backgroundColor: '#fff' },
+            parsed = redux.fn.parseRJSS('$mainColor = "#fff";\nWindow { backgroundColor: $mainColor }');
+        eval(parsed);
         Ti.UI.addEventListener('function::createWindow', curryAssertFirstParameter(params));
         var window = new this.Window();
         window.should.have.property('backgroundColor', params.backgroundColor);

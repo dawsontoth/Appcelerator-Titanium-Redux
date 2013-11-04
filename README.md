@@ -233,6 +233,11 @@ Not Supported until Version 1.5
     		text: 'Establecido por el nombre de clase'
     	}
     }
+    /* variables */
+    $background = 'white';
+    Window {
+    	backgroundColor: $background
+    }
 
 
 Here are some key features of RJSS to note--you'll want to use them:
@@ -251,6 +256,7 @@ Here are some key features of RJSS to note--you'll want to use them:
 - Chain attributes for more complicated rules -- [Ti.Platform.osname="iphone"||Ti.Platform.osname="ipad"] Window { backgroundColor: '#bef'}.
 - Specify multiple class names on your objects -- className: 'big_text red_text'.
 - Add comments to your RJSS using /\* and \*/. Note that // comments are not supported.
+- Variables must start with a $, and end with a ;. They must be valid JavaScript variable names.
 
 
 RJSS COMPILATION
