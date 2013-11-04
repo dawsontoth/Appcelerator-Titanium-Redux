@@ -17,20 +17,20 @@ SHORTHAND FOR COMMON FUNCTIONS
 
 Some functions you use all the time. Redux makes them shorter, and easier to type.
 
-**Normal Code**	
+**Normal Code**
 
-    Titanium.API.info('hi');		
-    Titanium.API.error('hi');		
-    Titanium.API.warn('hi');		
+    Titanium.API.info('hi');
+    Titanium.API.error('hi');
+    Titanium.API.warn('hi');
     Titanium.API.log('hi');
     Titanium.UI.currentWindow;
     Titanium.UI.currentTab;
 
-**Redux Code**	
+**Redux Code**
 
-    info('hi');		
-    error('hi');		
-    warn('hi');		
+    info('hi');
+    error('hi');
+    warn('hi');
     log('hi');
     currentWindow(); // or...
     win();
@@ -51,11 +51,11 @@ Redux features like JSS, default properties, and more. You can use this syntax f
 element normally created using the syntax Ti.\*.create\*. For example, Ti.Network.createHTTPClient()
 or Ti.UI.createLabel() could instead be new HTTPClient() or new Label(), respectively.
 
-**Normal Code**	
+**Normal Code**
 
     var label = Titanium.UI.createLabel();
 
-**Redux Code**	
+**Redux Code**
 
     var label = new Label();
 
@@ -114,11 +114,11 @@ overridden by either of these.
 **Normal Code**
 Not Supported
 
-**Redux Code**	
+**Redux Code**
 
-    Label.setDefault({ font: {fontWeight: 'bold' } });		
-    var label = new Label();		
-    alert(label.font.fontWeight == 'bold');		
+    Label.setDefault({ font: {fontWeight: 'bold' } });
+    var label = new Label();
+    alert(label.font.fontWeight == 'bold');
 
 
 UI PROPERTY DEFAULTS BY SELECTOR
@@ -128,15 +128,15 @@ Using a similar method to setting UI Property Defaults by Element Type, you can 
 for your UI elements by their IDs or class names. Note that property defaults by ID are considered more
 important than default properties by element type and class names, and will override them.
 
-**Normal Code**	
+**Normal Code**
 Not Supported
 
-**Redux Code**	
+**Redux Code**
 
-    $.setDefault('#myID', { text: 'Hello, World!', color: 'red' });	
+    $.setDefault('#myID', { text: 'Hello, World!', color: 'red' });
     $.setDefault('.myClassName', { font: { fontSize: 12 }, color: 'green' });
-    var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });	
-    alert(label.text == 'Hello, World!');	
+    var label = new Label({ id: 'myID', className: 'myClass', color: 'blue' });
+    alert(label.text == 'Hello, World!');
     alert(label.color == 'blue');
     alert(label.font.fontSize == 12);
 
@@ -146,30 +146,30 @@ EVENT BINDING
 
 Bind events in a more natural way. Note the wrapping $() and the fluent calls.
 
-**Normal Code**	
+**Normal Code**
 
-    var button = Titanium.UI.createButton({ title: 'Click Me!' });	
-    button.addEventListener('click', function() { alert('clicked!'); });	
-    button.fireEvent('click');	
-    button.fireEvent('click', {src: 'me'});	
+    var button = Titanium.UI.createButton({ title: 'Click Me!' });
+    button.addEventListener('click', function() { alert('clicked!'); });
+    button.fireEvent('click');
+    button.fireEvent('click', {src: 'me'});
 
-**Redux Code**	
+**Redux Code**
 
-    var button = new Button({ title: 'Click Me!' });	
+    var button = new Button({ title: 'Click Me!' });
     $(button).click(function() { alert('clicked!'); })
          .click()
          .click({src: 'me'});
 
 
-You can add support for custom events.	
-**Normal Code**	
+You can add support for custom events.
+**Normal Code**
 
-    button.addEventListener('myCustomEvent', function() { });	
+    button.addEventListener('myCustomEvent', function() { });
 
-**Redux Code**	
+**Redux Code**
 
-    $.addEventBinder('myCustomEvent');	// only needs to be called once, then can be used again and again
-    $(button).myCustomEvent(function() { });	
+    $.addEventBinder('myCustomEvent');    // only needs to be called once, then can be used again and again
+    $(button).myCustomEvent(function() { });
 
 
 RJSS
@@ -189,49 +189,49 @@ Not Supported until Version 1.5
 **Redux Code** for Styling Elements from common.rjss (or any .rjss file)
 
     Window {
-    	backgroundColor: '#fff'
+        backgroundColor: '#fff'
     }
     /* add comments! use familiar c style comment blocks like this one */
     Label {
-    	backgroundColor: '#faa',
-    	color: '#333'
+        backgroundColor: '#faa',
+        color: '#333'
     }
     /* add an attribute that will act as a filter */
     [Ti.Platform.osname="android"] Label {
-    	backgroundColor: '#aaf',
-    	color: '#666'
+        backgroundColor: '#aaf',
+        color: '#666'
     }
     /* select by id */
     #HelloWorld {
-    	left: 15,
-    	right: 15,
-    	height: 70,
-    	top: 50
+        left: 15,
+        right: 15,
+        height: 70,
+        top: 50
     }
     /* by className */
     .myClassName {
-    	text: 'Set by class name'
+        text: 'Set by class name'
     }
     /* by multiple selectors */
     .selector1, #selector2, Label {
-    	text: 'Set for all three selectors'
+        text: 'Set for all three selectors'
     }
     /* attribute with its own block */
     [Ti.Platform.locale="en"] {
-    	#HelloWorld {
-        		text: 'Hello, World!'
-    	}
-    	.myClassName {
-    		text: 'Set by class name'
-    	}
+        #HelloWorld {
+                text: 'Hello, World!'
+        }
+        .myClassName {
+            text: 'Set by class name'
+        }
     }
     [Ti.Platform.locale="es"] {
-    	#HelloWorld {
-    		text: 'Bienvenido, Mundo!'
-    	}
-    	.myClassName {
-    		text: 'Establecido por el nombre de clase'
-    	}
+        #HelloWorld {
+            text: 'Bienvenido, Mundo!'
+        }
+        .myClassName {
+            text: 'Establecido por el nombre de clase'
+        }
     }
     /* variables */
     $background = 'white';
