@@ -3,7 +3,9 @@ To reduce the amount of code you need to write when using Appcelerator Titanium.
 
 To use its features, include the redux.js file at the top of your app.js or Alloy.js:
 
-    require('redux');
+    require('redux').inject(this);
+    
+[![build status](https://secure.travis-ci.org/dawsontoth/Appcelerator-Titanium-Redux.png)](http://travis-ci.org/dawsontoth/Appcelerator-Titanium-Redux)
 
 
 FEATURES
