@@ -22,7 +22,7 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
     Titanium.API.info('hi');
     Titanium.API.error('hi');
     Titanium.API.warn('hi');
-    Titanium.API.log('hi');
+    Titanium.API.log('info', 'hi');
     Titanium.UI.currentWindow;
     Titanium.UI.currentTab;
 
@@ -31,7 +31,7 @@ Some functions you use all the time. Redux makes them shorter, and easier to typ
     info('hi');
     error('hi');
     warn('hi');
-    log('hi');
+    log('info', 'hi');
     currentWindow(); // or...
     win();
     currentTab(); // or...
