@@ -89,7 +89,7 @@ following in your RJSS, and it would get applied to the object we just made:
 
 **Redux RJSS Code**
 
-    Canvas { backgroundColor: 'red' }
+    PaintView { backgroundColor: 'red' }
 
 Styling your own objects with RJSS is very straightforward, if you don't want to add the full easy constructors:
 
